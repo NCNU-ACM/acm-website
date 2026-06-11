@@ -1,17 +1,37 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/home/HeroSection.vue';
+import GroupsSection from '../components/home/GroupsSection.vue';
+import UpcomingEvents from '../components/home/UpcomingEvents.vue';
+import EventReview from '../components/home/EventReview.vue';
+import JoinSection from '../components/home/JoinSection.vue';
+import { getCollection } from 'astro:content';
 
+const allGroups = await getCollection('groups');
+const groups = allGroups
+  .filter(g => g.data.active)
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="首頁">
+  <div id="fullpage">
+    <div class="section"><HeroSection client:load /></div>
+    <div class="section"><GroupsSection groups={groups.map(g => g.data)} client:load /></div>
+    <div class="section"><UpcomingEvents client:load /></div>
+    <div class="section"><EventReview client:load /></div>
+    <div class="section"><JoinSection client:load /></div>
+  </div>
+</BaseLayout>
+
+<script>
+import fullpage from 'fullpage.js';
+import 'fullpage.js/dist/fullpage.css';
+
+new fullpage('#fullpage', {
+  autoScrolling: true,
+  scrollHijacking: true,
+  navigation: true,
+  navigationPosition: 'right',
+  responsiveWidth: 768,
+});
+</script>
