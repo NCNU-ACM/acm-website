@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Navbar from '../components/common/Navbar.vue';
+import '../styles/global.css';
 
 interface Props {
   title?: string;
@@ -25,7 +26,6 @@ const groups = allGroups
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title} | NCNU ACM</title>
-    <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
   <body>
     <Navbar groups={groups} client:load />
