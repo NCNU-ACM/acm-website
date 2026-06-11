@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allEvents = await getCollection('events');
+---
+
+<BaseLayout title="活動公告">
+  <div class="max-w-4xl mx-auto px-8 py-16">
+    <h1 class="text-4xl font-bold mb-8" style="color: var(--color-accent);">活動公告</h1>
+    <p style="color: var(--color-text-muted);">目前沒有活動</p>
+  </div>
+</BaseLayout>

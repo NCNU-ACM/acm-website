@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allMembers = await getCollection('members');
+const currentMembers = allMembers.filter(m => m.data.active);
+---
+
+<BaseLayout title="成員介紹">
+  <div class="max-w-4xl mx-auto px-8 py-16">
+    <h1 class="text-4xl font-bold mb-8" style="color: var(--color-accent);">成員介紹</h1>
+    <p style="color: var(--color-text-muted);">目前沒有成員資料</p>
+  </div>
+</BaseLayout>

@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allGroups = await getCollection('groups');
+const groups = allGroups
+  .filter(g => g.data.active)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="加入我們">
+  <div class="max-w-4xl mx-auto px-8 py-16">
+    <h1 class="text-4xl font-bold mb-8" style="color: var(--color-accent);">加入我們</h1>
+    {groups.map(g => (
+      <div class="mb-8 p-6 rounded-lg" style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+        <h2 class="text-2xl font-bold mb-2" style={`color: ${g.data.color}`}>{g.data.name}</h2>
+        <p style="color: var(--color-text-muted);">{g.data.recruit?.description}</p>
+      </div>
+    ))}
+  </div>
+</BaseLayout>
