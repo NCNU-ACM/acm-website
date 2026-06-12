@@ -11,7 +11,21 @@ export async function getStaticPaths() {
 }
 
 const { group } = Astro.props;
-const { name, description, color, recruit, resources } = group.data;
+const { name, description, color, recruit, resources, slug } = group.data;
+
+const allShowcase = await getCollection('showcase');
+const showcaseItems = allShowcase
+  .filter(s => s.data.group === slug)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allEvents = await getCollection('events');
+const groupEvents = allEvents
+  .filter(e => e.data.group === slug || e.data.group === 'all')
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const allMembers = await getCollection('members');
+const groupMembers = allMembers.filter(m => m.data.group === slug && m.data.active);
 ---
 
 <BaseLayout title={name}>
@@ -20,13 +34,71 @@ const { name, description, color, recruit, resources } = group.data;
     <p class="text-lg mb-8" style="color: var(--color-text-muted);">{description}</p>
 
     {resources && resources.length > 0 && (
-      <div class="mb-8 flex gap-4">
+      <div class="mb-12 flex gap-4">
         {resources.map(r => (
           <a href={r.url} target="_blank" class="px-4 py-2 rounded"
              style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
             {r.label}
           </a>
         ))}
+      </div>
+    )}
+
+    {showcaseItems.length > 0 && (
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">成果展示</h2>
+        <div class="grid grid-cols-2 gap-4">
+          {showcaseItems.map(item => (
+            <div class="p-4 rounded-lg" style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+              <h3 class="font-bold mb-1">{item.data.title}</h3>
+              <p class="text-sm mb-2" style="color: var(--color-text-muted);">{item.data.description}</p>
+              {item.data.tags && (
+                <div class="flex gap-2 flex-wrap mb-2">
+                  {item.data.tags.map(tag => (
+                    <span class="text-xs px-2 py-1 rounded" style="background-color: var(--color-border);">{tag}</span>
+                  ))}
+                </div>
+              )}
+              {item.data.links && (
+                <div class="flex gap-3">
+                  {item.data.links.map(link => (
+                    <a href={link.url} target="_blank" class="text-sm" style="color: var(--color-accent);">{link.label}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {groupEvents.length > 0 && (
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">近期活動</h2>
+        <div class="space-y-3">
+          {groupEvents.map(event => (
+            <a href={`/events/${event.id}`} class="block p-4 rounded-lg"
+               style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+              <p class="font-bold">{event.data.title}</p>
+              <p class="text-sm" style="color: var(--color-text-muted);">{event.data.date.toLocaleDateString('zh-TW')}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {groupMembers.length > 0 && (
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">幹部</h2>
+        <div class="grid grid-cols-4 gap-4">
+          {groupMembers.map(m => (
+            <div class="p-4 rounded-lg text-center" style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+              <div class="w-16 h-16 mx-auto mb-2 rounded-full" style="background-color: var(--color-border);"></div>
+              <p class="font-bold">{m.data.name}</p>
+              <p class="text-sm" style="color: var(--color-text-muted);">{m.data.role}</p>
+            </div>
+          ))}
+        </div>
       </div>
     )}
 
