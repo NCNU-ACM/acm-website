@@ -11,14 +11,38 @@ const allGroups = await getCollection('groups');
 const groups = allGroups
   .filter(g => g.data.active)
   .sort((a, b) => a.data.order - b.data.order);
+
+const allEvents = await getCollection('events');
+const upcoming = allEvents
+  .filter(e => e.data.status === 'upcoming')
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
+  .slice(0, 3);
+
+const past = allEvents
+  .filter(e => e.data.status === 'past')
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 6);
 ---
 
 <BaseLayout title="首頁">
   <div id="fullpage">
     <div class="section"><HeroSection client:load /></div>
     <div class="section"><GroupsSection groups={groups.map(g => g.data)} client:load /></div>
-    <div class="section"><UpcomingEvents client:load /></div>
-    <div class="section"><EventReview client:load /></div>
+    <div class="section">
+      <UpcomingEvents events={upcoming.map(e => ({
+        id: e.id,
+        title: e.data.title,
+        date: e.data.date.toLocaleDateString('zh-TW'),
+        type: e.data.type,
+      }))} client:load />
+    </div>
+    <div class="section">
+      <EventReview events={past.map(e => ({
+        id: e.id,
+        title: e.data.title,
+        date: e.data.date.toLocaleDateString('zh-TW'),
+      }))} client:load />
+    </div>
     <div class="section"><JoinSection client:load /></div>
   </div>
 </BaseLayout>
