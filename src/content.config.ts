@@ -72,20 +72,9 @@ const showcase = defineCollection({
   }),
 });
 
-const announcements = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.md', base: './content/announcements' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    group: z.enum(['all', 'system', 'international', 'game', 'case']),
-    pinned: z.boolean().default(false),
-  }),
-});
-
 export const collections = {
   groups,
   events,
   members,
   showcase,
-  announcements,
 };
