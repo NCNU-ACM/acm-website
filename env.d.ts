@@ -6,3 +6,9 @@ declare module '*.vue' {
   const component: DefineComponent;
   export default component;
 }
+
+interface Window {
+  netlifyIdentity: {
+    on: (event: string, callback: (user?: any) => void) => void;
+  };
+}
