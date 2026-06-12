@@ -1,6 +1,5 @@
 backend:
   name: github
-  repo: NCNU-ACM/acm-website
   branch: master
 
 media_folder: public/images
