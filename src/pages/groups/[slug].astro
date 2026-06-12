@@ -11,10 +11,30 @@ export async function getStaticPaths() {
 }
 
 const { group } = Astro.props;
+const { name, description, color, recruit, resources } = group.data;
 ---
 
-<BaseLayout title={group.data.name}>
-  <h1 class="text-4xl font-bold p-8" style="color: var(--color-accent);">
-    {group.data.name}
-  </h1>
+<BaseLayout title={name}>
+  <div class="max-w-4xl mx-auto px-8 py-16">
+    <h1 class="text-4xl font-bold mb-4" style={`color: ${color}`}>{name}</h1>
+    <p class="text-lg mb-8" style="color: var(--color-text-muted);">{description}</p>
+
+    {resources && resources.length > 0 && (
+      <div class="mb-8 flex gap-4">
+        {resources.map(r => (
+          <a href={r.url} target="_blank" class="px-4 py-2 rounded"
+             style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+            {r.label}
+          </a>
+        ))}
+      </div>
+    )}
+
+    {recruit?.open && (
+      <div class="p-6 rounded-lg" style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+        <h2 class="text-xl font-bold mb-2">招募中</h2>
+        <p style="color: var(--color-text-muted);">{recruit.description}</p>
+      </div>
+    )}
+  </div>
 </BaseLayout>
