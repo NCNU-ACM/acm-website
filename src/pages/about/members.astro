@@ -4,11 +4,42 @@ import { getCollection } from 'astro:content';
 
 const allMembers = await getCollection('members');
 const currentMembers = allMembers.filter(m => m.data.active);
+
+const groupOrder = ['system', 'international', 'game', 'case'];
+const groupNames: Record<string, string> = {
+  system: '系統組',
+  international: '國際組',
+  game: '遊戲組',
+  case: '接案組',
+};
 ---
 
 <BaseLayout title="成員介紹">
   <div class="max-w-4xl mx-auto px-8 py-16">
     <h1 class="text-4xl font-bold mb-8" style="color: var(--color-accent);">成員介紹</h1>
-    <p style="color: var(--color-text-muted);">目前沒有成員資料</p>
+
+    {currentMembers.length === 0 ? (
+      <p style="color: var(--color-text-muted);">目前沒有成員資料</p>
+    ) : (
+      groupOrder.map(groupKey => {
+        const members = currentMembers.filter(m => m.data.group === groupKey);
+        if (members.length === 0) return null;
+        return (
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">{groupNames[groupKey]}</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {members.map(m => (
+                <div class="p-4 rounded-lg text-center"
+                     style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
+                  <div class="w-16 h-16 mx-auto mb-2 rounded-full" style="background-color: var(--color-border);"></div>
+                  <p class="font-bold">{m.data.name}</p>
+                  <p class="text-sm" style="color: var(--color-text-muted);">{m.data.role}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })
+    )}
   </div>
 </BaseLayout>
