@@ -58,7 +58,14 @@ const past = allEvents
     sections[index].scrollIntoView({ behavior: 'smooth' });
     
     document.querySelectorAll('.nav-dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === currentIndex);
+      const d = dot as HTMLElement;
+      if (i === currentIndex) {
+        d.style.background = 'rgba(59,130,246,0.9)';
+        d.style.transform = 'scale(1.3)';
+      } else {
+        d.style.background = 'rgba(255,255,255,0.3)';
+        d.style.transform = 'scale(1)';
+      }
     });
   };
 
