@@ -10,7 +10,7 @@
           NCNU <span style="color: var(--color-accent);">ACM</span>
         </h1>
       </div>
-      
+
       <div class="mb-6">
         <p class="text-3xl md:text-4xl lg:text-5xl gradient-text font-bold">
           程式設計 × 系統開發 × 創意實踐
@@ -140,7 +140,7 @@ onMounted(() => {
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-51%, 10%);
+  transform: translate(-51.7%, 10%);
   font-family: monospace;
   font-size: clamp(20px, 3vw, 36px);
   color: rgba(59, 130, 246, 0.25);
