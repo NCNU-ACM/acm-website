@@ -3,9 +3,9 @@
     <div class="hex-grid"></div>
 
     <div class="relative z-10 w-full">
-      <div class="text-center mb-6">
-        <p class="text-sm tracking-widest mb-2" style="color: var(--color-accent);">OUR GROUPS</p>
-        <h2 class="text-5xl md:text-6xl font-bold">我們的小組</h2>
+      <div class="text-center mb-10">
+        <p class="text-sm tracking-widest mb-2" style="color: rgba(59, 130, 246, 0.5);">OUR GROUPS</p>
+        <h2 class="section-title text-5xl md:text-6xl font-bold">我們的小組</h2>
         <p class="mt-3 text-lg" style="color: var(--color-text-muted);">選擇你感興趣的方向，加入我們</p>
       </div>
 
@@ -68,6 +68,24 @@ const getIcon = (slug: string) => iconMap[slug] ?? Server;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34L0 84V66l28 16 28-16v18L28 100z' fill='none' stroke='rgba(59,130,246,0.08)' stroke-width='1'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 0;
+}
+
+.section-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.75rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3b82f6, #06b6d4, transparent);
+  filter: drop-shadow(0 0 6px #3b82f6);
 }
 
 .group-card {
