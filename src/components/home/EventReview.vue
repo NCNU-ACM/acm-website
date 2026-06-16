@@ -140,8 +140,9 @@ defineProps<{
 
 .timeline-card {
   border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 26, 0.01);
+  backdrop-filter: blur(8px);
   padding: 1rem;
   text-align: center;
   transition: all 0.3s ease;
@@ -150,7 +151,7 @@ defineProps<{
 
 .timeline-item:hover .timeline-card {
   border-color: rgba(59, 130, 246, 0.4);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(10, 14, 26, 0.3);
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
 }
 
