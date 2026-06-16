@@ -44,6 +44,9 @@
         <span class="cursor" :class="{ active: isHovered }">_</span>
       </div>
     </div>
+    <div class="code-rain-wrapper">
+      <CodeRain />
+    </div>
   </div>
 </template>
 
@@ -51,6 +54,7 @@
 import { ref, onMounted } from 'vue';
 import figlet from 'figlet';
 import standard from 'figlet/importable-fonts/Standard.js';
+import CodeRain from './CodeRain.vue';
 
 const isHovered = ref(false);
 figlet.parseFont('Standard', standard);
@@ -280,5 +284,16 @@ onMounted(() => {
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+.code-rain-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
 }
 </style>
