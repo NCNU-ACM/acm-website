@@ -1,9 +1,8 @@
 <template>
   <div class="review-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16">
-    <div class="hex-grid"></div>
+    <Background />
 
     <div class="relative z-10 w-full">
-      <!-- 標題 -->
       <div class="text-center mb-12">
         <p class="text-sm tracking-widest mb-2" style="color: rgba(59, 130, 246, 0.5);">EVENT REVIEW</p>
         <h2 class="section-title text-5xl md:text-6xl font-bold">活動回顧</h2>
@@ -14,7 +13,6 @@
         目前沒有歷史活動
       </div>
 
-      <!-- 時間軸 -->
       <div v-else class="timeline-wrapper">
         <div class="timeline-line"></div>
         <div class="timeline-track">
@@ -38,6 +36,8 @@
 </template>
 
 <script setup lang="ts">
+import Background from './Background.vue';
+
 defineProps<{
   events: { id: string; title: string; date: string }[];
 }>();
@@ -46,15 +46,7 @@ defineProps<{
 <style scoped>
 .review-container {
   height: 100%;
-  background: #0a0e1a;
-}
-
-.hex-grid {
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34L0 84V66l28 16 28-16v18L28 100z' fill='none' stroke='rgba(59,130,246,0.08)' stroke-width='1'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
+  background: linear-gradient(to top, #030b23 0%, #063238 100%);
 }
 
 .section-title {
