@@ -79,7 +79,7 @@ onMounted(() => {
 <style scoped>
 .hero-container {
   height: 100%;
-  background: #0a0e1a;
+  background: linear-gradient(to top, #030b23 0%, #063238 100%);
 }
 
 .title-wrapper {
@@ -91,8 +91,8 @@ onMounted(() => {
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(59, 130, 246, 0.12) 2px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.12) 2px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
