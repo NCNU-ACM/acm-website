@@ -1,17 +1,38 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full px-8">
-    <h2 class="text-4xl font-bold mb-12">活動回顧</h2>
-    <div v-if="events.length === 0" style="color: var(--color-text-muted);">
-      目前沒有歷史活動
-    </div>
-    <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-3xl">
-      <a v-for="event in events" :key="event.id"
-         :href="`/events/${event.id}`"
-         class="p-4 rounded-lg"
-         style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
-        <p class="font-bold text-sm">{{ event.title }}</p>
-        <p class="text-xs" style="color: var(--color-text-muted);">{{ event.date }}</p>
-      </a>
+  <div class="review-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16">
+    <div class="hex-grid"></div>
+
+    <div class="relative z-10 w-full">
+      <!-- 標題 -->
+      <div class="text-center mb-12">
+        <p class="text-sm tracking-widest mb-2" style="color: rgba(59, 130, 246, 0.5);">EVENT REVIEW</p>
+        <h2 class="section-title text-5xl md:text-6xl font-bold">活動回顧</h2>
+        <p class="mt-3 text-lg" style="color: var(--color-text-muted);">我們一起走過的足跡</p>
+      </div>
+
+      <div v-if="events.length === 0" class="text-center" style="color: var(--color-text-muted);">
+        目前沒有歷史活動
+      </div>
+
+      <!-- 時間軸 -->
+      <div v-else class="timeline-wrapper">
+        <div class="timeline-line"></div>
+        <div class="timeline-track">
+          <a
+            v-for="(event, i) in events"
+            :key="event.id"
+            :href="`/events/${event.id}`"
+            class="timeline-item"
+            :class="{ 'item-top': i % 2 === 0, 'item-bottom': i % 2 !== 0 }"
+          >
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <p class="timeline-date">{{ event.date }}</p>
+              <h3 class="font-bold">{{ event.title }}</h3>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -21,3 +42,119 @@ defineProps<{
   events: { id: string; title: string; date: string }[];
 }>();
 </script>
+
+<style scoped>
+.review-container {
+  height: 100%;
+  background: #0a0e1a;
+}
+
+.hex-grid {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34L0 84V66l28 16 28-16v18L28 100z' fill='none' stroke='rgba(59,130,246,0.08)' stroke-width='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.75rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3b82f6, #06b6d4, transparent);
+  filter: drop-shadow(0 0 6px #3b82f6);
+}
+
+.timeline-wrapper {
+  position: relative;
+  overflow-x: auto;
+  padding: 4rem 1rem;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.4), transparent);
+}
+
+.timeline-track {
+  display: flex;
+  gap: 4rem;
+  position: relative;
+  min-width: max-content;
+  padding: 0 2rem;
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 180px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.timeline-item:hover .timeline-dot {
+  transform: translate(-50%, -50%) scale(1.4);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
+}
+
+.timeline-card {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.timeline-item:hover .timeline-card {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+}
+
+.timeline-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.item-top {
+  margin-bottom: 4rem;
+}
+
+.item-bottom {
+  margin-top: 4rem;
+}
+</style>
