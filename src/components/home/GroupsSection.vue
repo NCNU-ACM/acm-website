@@ -102,8 +102,9 @@ const getIcon = (slug: string) => iconMap[slug] ?? Server;
 .group-card {
   display: block;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 26, 0.01);
+  backdrop-filter: blur(8px);
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
@@ -111,7 +112,7 @@ const getIcon = (slug: string) => iconMap[slug] ?? Server;
 
 .group-card:hover {
   border-color: var(--group-color);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(10, 14, 26, 0.3);
   box-shadow: 0 0 30px color-mix(in srgb, var(--group-color) 20%, transparent);
   transform: translateY(-4px);
 }
