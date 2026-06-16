@@ -102,7 +102,7 @@ const getIcon = (slug: string) => iconMap[slug] ?? Server;
 .group-card {
   display: block;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   background: rgba(10, 14, 26, 0.01);
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
