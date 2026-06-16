@@ -1,5 +1,5 @@
 <template>
-  <div class="groups-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16">
+  <div class="groups-container h-full relative overflow-hidden flex flex-col items-center justify-center px-32">
     <div class="hex-grid"></div>
 
     <div class="relative z-10 w-full">
