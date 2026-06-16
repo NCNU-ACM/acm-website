@@ -55,11 +55,20 @@ const past = allEvents
   let currentIndex = 0;
   let isScrolling = false;
 
+  const getSectionTop = (index: number) => {
+    return (sections[index] as HTMLElement).getBoundingClientRect().top + window.scrollY;
+  };
+
   const goToSection = (index: number) => {
     if (index < 0 || index >= sections.length) return;
     currentIndex = index;
-    sections[index].scrollIntoView({ behavior: 'smooth' });
-    
+
+    if (index === 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: getSectionTop(index), behavior: 'smooth' });
+    }
+
     document.querySelectorAll('.nav-dot').forEach((dot, i) => {
       const d = dot as HTMLElement;
       if (i === currentIndex) {
@@ -115,12 +124,14 @@ const past = allEvents
     height: 100vh;
     overflow: hidden;
   }
-  html, body {
-    overflow: hidden;
-    height: 100%;
-  }
   .nav-dot.active {
     background: rgba(59, 130, 246, 0.9) !important;
     transform: scale(1.3) !important;
+  }
+  html {
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
   }
 </style>
