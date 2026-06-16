@@ -157,17 +157,13 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   scroll-behavior: smooth;
 }
 
-.event-card {
-  flex: 0 0 calc(33.333% - 1rem);
-  aspect-ratio: 25 / 26;
-  border-radius: 0.75rem;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 14, 26, 0.01);
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
-  overflow: hidden;
-  display: block;
-  color: inherit;
+.empty-card {
+  aspect-ratio: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 100%;
+  min-height: 120px;
 }
 
 .event-card:hover {
