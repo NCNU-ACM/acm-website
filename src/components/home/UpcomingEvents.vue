@@ -4,9 +4,9 @@
 
     <div class="relative z-10 w-full">
       <div class="text-center mb-10">
-        <p class="text-sm tracking-widest mb-2" style="color: rgba(59, 130, 246, 0.5);">UPCOMING EVENTS</p>
+        <p class="text-sm tracking-widest mb-2 section-label">UPCOMING EVENTS</p>
         <h2 class="section-title text-5xl md:text-6xl font-bold">近期活動</h2>
-        <p class="mt-3 text-lg" style="color: var(--color-text-muted);">掌握最新活動資訊</p>
+        <p class="mt-3 text-lg section-subtitle">掌握最新活動資訊</p>
       </div>
 
       <div class="carousel-wrapper">
@@ -110,6 +110,14 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   position: relative;
   display: inline-block;
   padding-bottom: 0.75rem;
+  background: linear-gradient(to top right, #3b82f6 0%, #34d399 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: 
+    drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
+    drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
+    drop-shadow(2px 4px 0px rgba(0, 0, 0, 0.6));
 }
 
 .section-title::after {
@@ -122,6 +130,16 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   height: 2px;
   background: linear-gradient(90deg, transparent, #3b82f6, #06b6d4, transparent);
   filter: drop-shadow(0 0 6px #3b82f6);
+}
+
+.section-label {
+  color: rgba(96, 165, 250, 0.8);
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.section-subtitle {
+  color: rgba(226, 232, 240, 0.85);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .carousel-wrapper {
