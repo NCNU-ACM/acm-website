@@ -161,8 +161,9 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   flex: 0 0 calc(33.333% - 1rem);
   aspect-ratio: 25 / 26;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 26, 0.01);
+  backdrop-filter: blur(8px);
   transition: all 0.3s ease;
   overflow: hidden;
   display: block;
@@ -171,7 +172,7 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
 
 .event-card:hover {
   border-color: rgba(59, 130, 246, 0.4);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(10, 14, 26, 0.3);
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
   transform: translateY(-4px);
 }
