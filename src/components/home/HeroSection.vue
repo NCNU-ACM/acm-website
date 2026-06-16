@@ -1,6 +1,6 @@
 <template>
   <div class="hero-container flex flex-col h-full relative overflow-hidden">
-    <div class="hex-grid"></div>
+    <div class="circuit-bg"></div>
     <div class="side-line left"></div>
     <div class="side-line right"></div>
     <div class="flex flex-col items-center justify-center flex-1 relative z-10 text-center px-8">
@@ -87,10 +87,13 @@ onMounted(() => {
   display: inline-block;
 }
 
-.hex-grid {
+.circuit-bg {
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34L0 84V66l28 16 28-16v18L28 100z' fill='none' stroke='rgba(59,130,246,0.08)' stroke-width='1'/%3E%3C/svg%3E");
+  background-image: 
+    linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
 }
