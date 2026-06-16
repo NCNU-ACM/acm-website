@@ -1,8 +1,6 @@
 <template>
   <div class="hero-container flex flex-col h-full relative overflow-hidden">
     <div class="circuit-bg"></div>
-    <div class="side-line left"></div>
-    <div class="side-line right"></div>
     <div class="flex flex-col items-center justify-center flex-1 relative z-10 text-center px-8">
       <div class="title-wrapper">
         <pre class="ascii-bg">{{ asciiArt }}</pre>
@@ -157,47 +155,6 @@ onMounted(() => {
     drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
     drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
     drop-shadow(3px 6px 0px rgba(0, 0, 0, 1));
-}
-
-.side-line {
-  position: absolute;
-  top: 10%;
-  width: 1px;
-  height: 80%;
-  background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.3) 30%, rgba(59, 130, 246, 0.3) 70%, transparent);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.side-line.left {
-  left: 3rem;
-}
-
-.side-line.right {
-  right: 3rem;
-}
-
-.side-line::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  height: 40px;
-  background: rgba(59, 130, 246, 0.8);
-  left: -1.5px;
-  border-radius: 9999px;
-  filter: blur(2px);
-  animation: slide-down 4s ease-in-out infinite;
-}
-
-.side-line.right::after {
-  animation-delay: 2s;
-}
-
-@keyframes slide-down {
-  0% { top: 0%; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
 }
 
 .ascii-bg {
