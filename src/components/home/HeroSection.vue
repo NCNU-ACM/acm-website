@@ -6,8 +6,8 @@
     <div class="flex flex-col items-center justify-center flex-1 relative z-10 text-center px-8">
       <div class="title-wrapper">
         <pre class="ascii-bg">{{ asciiArt }}</pre>
-        <h1 class="text-7xl md:text-8xl lg:text-9xl font-bold mb-4 tracking-tight relative z-10">
-          NCNU <span style="color: var(--color-accent);">ACM</span>
+        <h1 class="text-7xl md:text-8xl lg:text-9xl font-bold mb-4 tracking-tight relative z-10 hero-title">
+          NCNU ACM
         </h1>
       </div>
 
@@ -96,6 +96,18 @@ onMounted(() => {
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
+}
+
+.hero-title {
+  background: linear-gradient(to top right, #3b82f6 0%, #34d399 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+  filter: 
+    drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
+    drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
+    drop-shadow(3px 6px 0px rgba(0, 0, 0, 1));
 }
 
 .side-line {
