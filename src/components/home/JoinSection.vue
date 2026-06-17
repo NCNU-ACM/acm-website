@@ -1,16 +1,16 @@
 <template>
-  <div class="join-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16 text-center">
+  <div ref="containerRef" class="join-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16 text-center">
     <Background />
     <div class="glow-bg"></div>
 
     <div class="relative z-10">
-      <p class="text-sm tracking-widest mb-2 section-label">JOIN US</p>
-      <h2 class="section-title text-5xl md:text-6xl font-bold mb-6">準備好加入了嗎？</h2>
-      <p class="mt-3 text-lg section-subtitle">
+      <p class="text-sm tracking-widest mb-2 section-label" data-reveal>JOIN US</p>
+      <h2 class="section-title text-5xl md:text-6xl font-bold mb-6" data-reveal data-reveal-delay="100">準備好加入了嗎？</h2>
+      <p class="text-lg mb-10 max-w-xl mx-auto section-subtitle" data-reveal data-reveal-delay="200">
         不論你是程式新手還是經驗豐富的開發者，這裡都有適合你的位置
       </p>
 
-      <div class="flex flex-wrap gap-4 justify-center pt-4">
+      <div class="flex flex-wrap gap-4 justify-center pt-4" data-reveal data-reveal-delay="300">
         <a href="/join" class="inline-block px-8 py-4 rounded-full font-medium transition-all hover:scale-105 glow-button">
           立即加入 →
         </a>
@@ -24,12 +24,26 @@
 
 <script setup lang="ts">
 import Background from './Background.vue';
+import { useScrollReveal } from '../useScrollReveal';
+
+const { containerRef } = useScrollReveal();
 </script>
 
 <style scoped>
 .join-container {
   height: 100%;
   background: linear-gradient(to top, #030b23 0%, #063238 100%);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .glow-bg {
@@ -58,7 +72,7 @@ import Background from './Background.vue';
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: 
+  filter:
     drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
     drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
     drop-shadow(2px 4px 0px rgba(0, 0, 0, 0.6));

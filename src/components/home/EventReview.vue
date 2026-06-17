@@ -1,19 +1,19 @@
 <template>
-  <div class="review-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16">
+  <div ref="containerRef" class="review-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16">
     <Background />
 
     <div class="relative z-10 w-full">
-      <div class="text-center mb-12">
+      <div class="text-center mb-12" data-reveal>
         <p class="text-sm tracking-widest mb-2 section-label">EVENT REVIEW</p>
         <h2 class="section-title text-5xl md:text-6xl font-bold">活動回顧</h2>
         <p class="mt-3 text-lg section-subtitle">我們一起走過的足跡</p>
       </div>
 
-      <div v-if="events.length === 0" class="text-center" style="color: var(--color-text-muted);">
+      <div v-if="events.length === 0" class="text-center" style="color: var(--color-text-muted);" data-reveal data-reveal-delay="200">
         目前沒有歷史活動
       </div>
 
-      <div v-else class="timeline-wrapper">
+      <div v-else class="timeline-wrapper" data-reveal data-reveal-delay="200">
         <div class="timeline-line"></div>
         <div class="timeline-track">
           <a
@@ -22,6 +22,8 @@
             :href="`/events/${event.id}`"
             class="timeline-item"
             :class="{ 'item-top': i % 2 === 0, 'item-bottom': i % 2 !== 0 }"
+            data-reveal
+            :data-reveal-delay="300 + i * 100"
           >
             <div class="timeline-dot"></div>
             <div class="timeline-card">
@@ -37,16 +39,30 @@
 
 <script setup lang="ts">
 import Background from './Background.vue';
+import { useScrollReveal } from '../useScrollReveal';
 
 defineProps<{
   events: { id: string; title: string; date: string }[];
 }>();
+
+const { containerRef } = useScrollReveal();
 </script>
 
 <style scoped>
 .review-container {
   height: 100%;
   background: linear-gradient(to top, #030b23 0%, #063238 100%);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .section-title {
@@ -152,6 +168,14 @@ defineProps<{
   transition: all 0.3s ease;
 }
 
+.item-top .timeline-card {
+  top: 0;
+}
+
+.item-bottom .timeline-card {
+  bottom: 0;
+}
+
 .timeline-item:hover .timeline-card {
   border-color: rgba(59, 130, 246, 0.4);
   background: rgba(10, 14, 26, 0.3);
@@ -162,13 +186,5 @@ defineProps<{
   font-size: 0.75rem;
   color: var(--color-text-muted);
   margin-bottom: 0.25rem;
-}
-
-.item-top .timeline-card {
-  top: 0;
-}
-
-.item-bottom .timeline-card {
-  bottom: 0;
 }
 </style>

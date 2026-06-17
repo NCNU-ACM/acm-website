@@ -1,21 +1,21 @@
 <template>
-  <div class="hero-container flex flex-col h-full relative overflow-hidden">
+  <div ref="containerRef" class="hero-container flex flex-col h-full relative overflow-hidden">
     <Background />
     <div class="flex flex-col items-center justify-center flex-1 relative z-10 text-center px-8">
-      <div class="title-wrapper">
+      <div class="title-wrapper" data-reveal>
         <pre class="ascii-bg">{{ asciiArt }}</pre>
         <h1 class="text-7xl md:text-8xl lg:text-9xl font-bold mb-4 tracking-tight relative z-10 hero-title">
           NCNU ACM
         </h1>
       </div>
 
-      <div class="mb-6">
+      <div class="mb-6" data-reveal data-reveal-delay="150">
         <p class="text-3xl md:text-4xl lg:text-5xl gradient-text font-bold">
           程式設計 × 系統開發 × 創意實踐
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-4 justify-center mt-6">
+      <div class="flex flex-wrap gap-4 justify-center mt-6" data-reveal data-reveal-delay="300">
         <a href="/join" class="inline-block px-8 py-4 rounded-full font-medium transition-all hover:scale-105 glow-button">
           加入我們 →
         </a>
@@ -27,7 +27,7 @@
         </a>
       </div>
 
-      <div class="terminal-input-bar mt-8"
+      <div class="terminal-input-bar mt-8" data-reveal data-reveal-delay="450"
           @mouseenter="isHovered = true"
           @mouseleave="isHovered = false">
           <span v-if="!inputText" class="placeholder-text" :class="{ active: isHovered }">NCNU ACM</span>
@@ -50,6 +50,9 @@ import { ref, onMounted } from 'vue';
 import figlet from 'figlet';
 import standard from 'figlet/importable-fonts/Standard.js';
 import Background from './Background.vue';
+import { useScrollReveal } from '../useScrollReveal';
+
+const { containerRef } = useScrollReveal();
 
 const isHovered = ref(false);
 figlet.parseFont('Standard', standard);
@@ -79,6 +82,17 @@ onMounted(() => {
 .hero-container {
   height: 100%;
   background: linear-gradient(to top, #030b23 0%, #063238 100%);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .title-wrapper {

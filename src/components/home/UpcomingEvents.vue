@@ -1,20 +1,20 @@
 <template>
-  <div class="events-container h-full relative overflow-hidden flex flex-col items-center justify-center px-32">
+  <div ref="containerRef" class="events-container h-full relative overflow-hidden flex flex-col items-center justify-center px-32">
     <Background />
 
     <div class="relative z-10 w-full">
-      <div class="text-center mb-10">
+      <div class="text-center mb-10" data-reveal>
         <p class="text-sm tracking-widest mb-2 section-label">UPCOMING EVENTS</p>
         <h2 class="section-title text-5xl md:text-6xl font-bold">近期活動</h2>
         <p class="mt-3 text-lg section-subtitle">掌握最新活動資訊</p>
       </div>
 
-      <div class="carousel-wrapper">
+      <div class="carousel-wrapper" data-reveal data-reveal-delay="200">
         <button class="carousel-btn left" @click="prev" :disabled="currentSlide === 0">‹</button>
 
-        <div 
-          class="carousel-track" 
-          ref="track" 
+        <div
+          class="carousel-track"
+          ref="track"
           :style="{ justifyContent: events.length <= visibleCount ? 'center' : 'flex-start' }"
         >
           <div
@@ -24,25 +24,27 @@
             <p style="color: var(--color-text-muted);">目前沒有近期活動</p>
           </div>
           <a
-            v-for="event in events"
+            v-for="(event, index) in events"
             :key="event.id"
             :href="`/events/${event.id}`"
             class="event-card"
+            data-reveal
+            :data-reveal-delay="300 + index * 100"
           >
-          <div class="event-card-inner">
-            <h3 class="text-3xl font-bold mb-3">{{ event.title }}</h3>
-            <div class="event-meta">
-              <span>日期: {{ event.date }}</span>
-              <span v-if="event.location">地點: {{ event.location }}</span>
-            </div>
-            <p class="text-xl mb-4" style="color: var(--color-text-muted);">{{ event.description }}</p>
-            <div class="mt-auto">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="tag">{{ event.type }}</span>
-                <span class="tag tag-group">{{ event.group }}</span>
+            <div class="event-card-inner">
+              <h3 class="text-xl font-bold mb-3">{{ event.title }}</h3>
+              <p class="text-sm mb-4" style="color: var(--color-text-muted);">{{ event.description }}</p>
+              <div class="mt-auto">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="tag">{{ event.type }}</span>
+                  <span class="tag tag-group">{{ event.group }}</span>
+                </div>
+                <div class="event-meta">
+                  <span>📅 {{ event.date }}</span>
+                  <span v-if="event.location">📍 {{ event.location }}</span>
+                </div>
               </div>
             </div>
-          </div>
             <div class="card-border-bottom"></div>
           </a>
         </div>
@@ -50,7 +52,7 @@
         <button class="carousel-btn right" @click="next" :disabled="currentSlide >= events.length - visibleCount">›</button>
       </div>
 
-      <div class="dots">
+      <div class="dots" data-reveal data-reveal-delay="400">
         <span
           v-for="(_, i) in events"
           :key="i"
@@ -66,6 +68,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Background from './Background.vue';
+import { useScrollReveal } from '../useScrollReveal';
 
 const props = defineProps<{
   events: {
@@ -78,6 +81,8 @@ const props = defineProps<{
     description: string;
   }[];
 }>();
+
+const { containerRef } = useScrollReveal();
 
 const track = ref<HTMLElement | null>(null);
 const currentSlide = ref(0);
@@ -106,6 +111,17 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   background: linear-gradient(to top, #030b23 0%, #063238 100%);
 }
 
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .section-title {
   position: relative;
   display: inline-block;
@@ -114,7 +130,7 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: 
+  filter:
     drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
     drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
     drop-shadow(2px 4px 0px rgba(0, 0, 0, 0.6));
@@ -157,13 +173,17 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   scroll-behavior: smooth;
 }
 
-.empty-card {
-  aspect-ratio: unset;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 100%;
-  min-height: 120px;
+.event-card {
+  flex: 0 0 calc(33.333% - 1rem);
+  aspect-ratio: 25 / 26;
+  border-radius: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 26, 0.01);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease, opacity 0.6s ease, transform 0.6s ease;
+  overflow: hidden;
+  display: block;
+  color: inherit;
 }
 
 .event-card:hover {
@@ -201,6 +221,15 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
   gap: 0.25rem;
   font-size: 0.85rem;
   color: var(--color-text-muted);
+}
+
+.empty-card {
+  aspect-ratio: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 100%;
+  min-height: 120px;
 }
 
 .card-border-bottom {
