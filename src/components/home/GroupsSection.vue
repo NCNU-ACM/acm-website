@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { Server, Globe, Gamepad2, Briefcase } from 'lucide-vue-next';
-import Background from './Background.vue';
+import Background from '../common/Background.vue';
 import { useScrollReveal } from '../useScrollReveal';
 
 defineProps<{

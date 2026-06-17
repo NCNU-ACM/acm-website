@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Background from './Background.vue';
+import Background from '../common/Background.vue';
 import { useScrollReveal } from '../useScrollReveal';
 
 const props = defineProps<{
