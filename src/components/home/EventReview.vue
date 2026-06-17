@@ -57,7 +57,7 @@ defineProps<{
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: 
+  filter:
     drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
     drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
     drop-shadow(2px 4px 0px rgba(0, 0, 0, 0.6));
@@ -117,6 +117,7 @@ defineProps<{
   flex-shrink: 0;
   text-decoration: none;
   color: inherit;
+  height: 200px;
 }
 
 .timeline-dot {
@@ -139,6 +140,9 @@ defineProps<{
 }
 
 .timeline-card {
+  position: absolute;
+  left: 0;
+  right: 0;
   border-radius: 0.5rem;
   border: 2px solid rgba(255, 255, 255, 0.1);
   background: rgba(10, 14, 26, 0.01);
@@ -146,7 +150,6 @@ defineProps<{
   padding: 1rem;
   text-align: center;
   transition: all 0.3s ease;
-  width: 100%;
 }
 
 .timeline-item:hover .timeline-card {
@@ -161,11 +164,11 @@ defineProps<{
   margin-bottom: 0.25rem;
 }
 
-.item-top {
-  margin-bottom: 4rem;
+.item-top .timeline-card {
+  top: 0;
 }
 
-.item-bottom {
-  margin-top: 4rem;
+.item-bottom .timeline-card {
+  bottom: 0;
 }
 </style>
