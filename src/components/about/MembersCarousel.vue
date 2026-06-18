@@ -24,8 +24,7 @@
           @click="handleCardClick(index)"
         >
           <div class="card-left">
-            <img v-if="member.avatar" :src="member.avatar" class="avatar-image" :alt="member.name" />
-            <div v-else class="avatar-placeholder">{{ member.name.charAt(0) }}</div>
+            <img :src="avatarUrl(member)" class="avatar-image" :alt="member.name" />
             <h3 class="member-name">{{ member.name }}</h3>
           </div>
           <div class="card-right">
@@ -82,6 +81,11 @@ const props = defineProps<{
 const groupLabel = (slug: string) => {
   const g = props.groups.find(g => g.slug === slug);
   return g ? g.name : slug;
+};
+
+const avatarUrl = (member: Member) => {
+  if (member.avatar) return member.avatar;
+  return `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${encodeURIComponent(member.name)}`;
 };
 
 const currentSemester = ref(props.latestSemester);
