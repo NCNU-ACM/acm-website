@@ -216,11 +216,11 @@ const closeModal = () => {
 }
 
 .item-top .timeline-card {
-  top: 0;
+  bottom: calc(50% + 20px);
 }
 
 .item-bottom .timeline-card {
-  bottom: 0;
+  top: calc(50% + 20px);
 }
 
 .timeline-item:hover .timeline-card {
