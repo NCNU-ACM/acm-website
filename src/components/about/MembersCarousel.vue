@@ -12,7 +12,7 @@
     </div>
 
     <div v-else class="card-wrapper">
-      <button class="nav-btn left" @click="prev" :disabled="currentIndex === 0">‹</button>
+      <button class="nav-btn left" @click="prev">‹</button>
 
       <div class="member-card">
         <div class="card-left">
@@ -38,7 +38,7 @@
         </div>
       </div>
 
-      <button class="nav-btn right" @click="next" :disabled="currentIndex >= filteredMembers.length - 1">›</button>
+      <button class="nav-btn right" @click="next">›</button>
     </div>
 
     <div v-if="filteredMembers.length > 0" class="counter">
@@ -80,11 +80,19 @@ const resetIndex = () => {
 };
 
 const prev = () => {
-  if (currentIndex.value > 0) currentIndex.value--;
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
+  } else {
+    currentIndex.value = filteredMembers.value.length - 1;
+  }
 };
 
 const next = () => {
-  if (currentIndex.value < filteredMembers.value.length - 1) currentIndex.value++;
+  if (currentIndex.value < filteredMembers.value.length - 1) {
+    currentIndex.value++;
+  } else {
+    currentIndex.value = 0;
+  }
 };
 
 const groupLabel = (slug: string) => {
