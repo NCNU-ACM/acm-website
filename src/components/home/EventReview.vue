@@ -17,7 +17,7 @@
         <div class="timeline-line"></div>
         <div class="timeline-track">
           <a
-            v-for="(event, i) in events"
+            v-for="(event, i) in reversedEvents"
             :key="event.id"
             :href="`/events/${event.id}`"
             class="timeline-item"
@@ -38,13 +38,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import Background from '../common/Background.vue';
 import { useScrollReveal } from '../useScrollReveal';
 
-defineProps<{
+const props = defineProps<{
   events: { id: string; title: string; date: string }[];
 }>();
 
+const reversedEvents = computed(() => [...props.events].reverse());
 const { containerRef } = useScrollReveal();
 </script>
 
