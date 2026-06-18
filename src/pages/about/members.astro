@@ -5,8 +5,9 @@ import MembersCarousel from '../../components/about/MembersCarousel.vue';
 import { getCollection } from 'astro:content';
 
 const allMembers = await getCollection('members');
+const allGroups = await getCollection('groups');
+const groups = allGroups.map(g => ({ slug: g.data.slug, name: g.data.name }));
 
-// 從 entry.id 解析出學期（id 格式類似 "1141/20240615143022"）
 const membersWithSemester = allMembers.map(m => ({
   id: m.id,
   semester: m.id.split('/')[0],
@@ -33,6 +34,7 @@ const latestSemester = semesters[0];
         members={membersWithSemester}
         semesters={semesters}
         latestSemester={latestSemester}
+        groups={groups}
         client:load
       />
     </div>

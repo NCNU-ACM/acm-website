@@ -11,29 +11,39 @@
       這個學期目前沒有幹部資料
     </div>
 
-    <div v-else class="card-wrapper">
+    <div v-else class="stage">
       <button class="nav-btn left" @click="prev">‹</button>
 
-      <div class="member-card">
-        <div class="card-left">
-          <div class="avatar-placeholder">{{ currentMember.name.charAt(0) }}</div>
-          <h3 class="member-name">{{ currentMember.name }}</h3>
-        </div>
-        <div class="card-right">
-          <p class="member-role">
-            <span v-if="currentMember.group">{{ groupLabel(currentMember.group) }} </span>{{ currentMember.role }}
-          </p>
-          <p v-if="currentMember.bio" class="member-bio">{{ currentMember.bio }}</p>
-          <div v-if="currentMember.contact && currentMember.contact.length" class="contact-list">
-            <a
-              v-for="c in currentMember.contact"
-              :key="c.label"
-              :href="c.url"
-              target="_blank"
-              class="contact-link"
-            >
-              {{ c.label }}
-            </a>
+      <div class="cards-track">
+        <div
+          v-for="(member, index) in filteredMembers"
+          :key="member.id"
+          class="member-card"
+          :class="cardPositionClass(index)"
+          :style="cardStyle(index)"
+          @click="handleCardClick(index)"
+        >
+          <div class="card-left">
+            <div class="avatar-placeholder">{{ member.name.charAt(0) }}</div>
+            <h3 class="member-name">{{ member.name }}</h3>
+          </div>
+          <div class="card-right">
+            <p class="member-role">
+              <span v-if="member.group">{{ groupLabel(member.group) }} </span>{{ member.role }}
+            </p>
+            <p v-if="member.bio" class="member-bio">{{ member.bio }}</p>
+            <div v-if="member.contact && member.contact.length" class="contact-list">
+              <a
+                v-for="c in member.contact"
+                :key="c.label"
+                :href="c.url"
+                target="_blank"
+                class="contact-link"
+                @click.stop
+              >
+                {{ c.label }}
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +74,13 @@ const props = defineProps<{
   members: Member[];
   semesters: string[];
   latestSemester: string;
+  groups: { slug: string; name: string }[];
 }>();
+
+const groupLabel = (slug: string) => {
+  const g = props.groups.find(g => g.slug === slug);
+  return g ? g.name : slug;
+};
 
 const currentSemester = ref(props.latestSemester);
 const currentIndex = ref(0);
@@ -73,36 +89,80 @@ const filteredMembers = computed(() =>
   props.members.filter(m => m.semester === currentSemester.value)
 );
 
-const currentMember = computed(() => filteredMembers.value[currentIndex.value]);
-
 const resetIndex = () => {
   currentIndex.value = 0;
 };
 
 const prev = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value--;
-  } else {
-    currentIndex.value = filteredMembers.value.length - 1;
-  }
+  const len = filteredMembers.value.length;
+  currentIndex.value = (currentIndex.value - 1 + len) % len;
 };
 
 const next = () => {
-  if (currentIndex.value < filteredMembers.value.length - 1) {
-    currentIndex.value++;
-  } else {
-    currentIndex.value = 0;
-  }
+  const len = filteredMembers.value.length;
+  currentIndex.value = (currentIndex.value + 1) % len;
 };
 
-const groupLabel = (slug: string) => {
-  const map: Record<string, string> = {
-    system: '系統組',
-    international: '國際組',
-    game: '遊戲組',
-    case: '接案組',
+const getOffset = (index: number) => {
+  const len = filteredMembers.value.length;
+  let offset = index - currentIndex.value;
+  if (offset > len / 2) offset -= len;
+  if (offset < -len / 2) offset += len;
+  return offset;
+};
+
+const cardPositionClass = (index: number) => {
+  const offset = getOffset(index);
+  if (offset === 0) return 'is-active';
+  if (offset === -1) return 'is-prev';
+  if (offset === 1) return 'is-next';
+  if (offset === -2) return 'is-prev-2';
+  if (offset === 2) return 'is-next-2';
+  return 'is-hidden';
+};
+const cardStyle = (index: number) => {
+  const offset = getOffset(index);
+  const absOffset = Math.abs(offset);
+  const direction = offset === 0 ? 0 : offset / absOffset;
+
+  const baseGap = 220;
+  const shrinkFactor = 0.7;
+  
+  let translateDistance = 0;
+  let gap = baseGap;
+  for (let i = 0; i < absOffset; i++) {
+    translateDistance += gap;
+    gap *= shrinkFactor * shrinkFactor;
+  }
+  const translateX = direction * translateDistance;
+  let scale = 1;
+  let opacity = 1;
+  const zIndex = 10 - Math.abs(offset);
+
+  if (absOffset === 0) {
+    scale = 1;
+    opacity = 1;
+  } else {
+    const scaleShrink = 0.1;
+    const opacityShrink = 0.25;
+    scale = Math.max(0.4, 1 - absOffset * scaleShrink);
+    opacity = Math.max(0, 1 - absOffset * opacityShrink);
+  }
+
+  return {
+    transform: `translateX(${translateX}px) scale(${scale})`,
+    opacity,
+    zIndex,
   };
-  return map[slug] || slug;
+};
+
+const handleCardClick = (index: number) => {
+  const offset = getOffset(index);
+  if (offset < 0) {
+    for (let i = 0; i < Math.abs(offset); i++) prev();
+  } else if (offset > 0) {
+    for (let i = 0; i < offset; i++) next();
+  }
 };
 </script>
 
@@ -140,23 +200,46 @@ const groupLabel = (slug: string) => {
   padding: 4rem 0;
 }
 
-.card-wrapper {
+.stage {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.cards-track {
+  position: relative;
+  flex: 1;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .member-card {
+  position: absolute;
   width: 480px;
   min-height: 280px;
   padding: 2rem;
   border-radius: 1rem;
   border: 2px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 14, 26, 0.6);
+  background: rgba(10, 14, 26, 0.7);
   backdrop-filter: blur(8px);
   display: flex;
   gap: 2rem;
-  transition: all 0.3s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  cursor: pointer;
+}
+
+.member-card.is-active {
+  cursor: default;
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.member-card.is-hidden {
+  pointer-events: none;
 }
 
 .card-left {
@@ -199,7 +282,8 @@ const groupLabel = (slug: string) => {
 
 .member-role {
   color: rgba(96, 165, 250, 0.9);
-  font-size: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
   margin-bottom: 0.75rem;
 }
 
@@ -247,16 +331,12 @@ const groupLabel = (slug: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 20;
 }
 
-.nav-btn:hover:not(:disabled) {
+.nav-btn:hover {
   background: rgba(59, 130, 246, 0.2);
   border-color: rgba(59, 130, 246, 0.5);
-}
-
-.nav-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }
 
 .counter {
