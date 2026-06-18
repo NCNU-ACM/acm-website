@@ -173,7 +173,7 @@ const stopMarquee = (id: string) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: 640px;
+  height: 480px;
   overflow-y: auto;
   padding-right: 0.5rem;
 }
