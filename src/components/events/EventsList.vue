@@ -2,23 +2,40 @@
   <div class="list-section">
     <div v-if="events.length === 0" class="empty">目前沒有活動資料</div>
 
-    <div v-else class="list-grid">
-      <div
-        v-for="event in events"
-        :key="event.id"
-        class="event-row"
-        @click="openModal(event)"
-      >
-        <div class="row-date">
-          <span class="date-day">{{ formatDay(event.date) }}</span>
-          <span class="date-month">{{ formatMonth(event.date) }}</span>
+    <div v-else class="list-grid-wrapper">
+      <div class="list-grid">
+        <div
+          v-for="event in paginatedEvents"
+          :key="event.id"
+          class="event-row"
+          @click="openModal(event)"
+        >
+          <div class="row-date">
+            <span class="date-day">{{ formatDay(event.date) }}</span>
+            <span class="date-month">{{ formatMonth(event.date) }}</span>
+          </div>
+          <div class="row-content">
+            <h3 class="row-title">{{ event.title }}</h3>
+            <p class="row-description">{{ event.description }}</p>
+          </div>
+          <div class="row-group">{{ groupName(event.group) }}</div>
+          <div class="row-arrow">›</div>
         </div>
-        <div class="row-content">
-          <h3 class="row-title">{{ event.title }}</h3>
-        </div>
-        <div class="row-group">{{ groupName(event.group) }}</div>
-        <div class="row-arrow">›</div>
       </div>
+    </div>
+
+    <div v-if="totalPages > 1" class="pagination">
+      <button class="page-btn" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">‹</button>
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        class="page-btn"
+        :class="{ active: page === currentPage }"
+        @click="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+      <button class="page-btn" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">›</button>
     </div>
 
     <div v-if="selectedEvent" class="modal-overlay" @click.self="closeModal">
@@ -48,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 interface EventItem {
   id: string;
@@ -68,6 +85,20 @@ const props = defineProps<{
 }>();
 
 const selectedEvent = ref<EventItem | null>(null);
+const currentPage = ref(1);
+const pageSize = 10;
+
+const totalPages = computed(() => Math.ceil(props.events.length / pageSize));
+
+const paginatedEvents = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return props.events.slice(start, start + pageSize);
+});
+
+const goToPage = (page: number) => {
+  if (page < 1 || page > totalPages.value) return;
+  currentPage.value = page;
+};
 
 const groupName = (slug: string) => {
   const g = props.groups.find(g => g.slug === slug);
@@ -110,6 +141,35 @@ const closeModal = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: 480px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.list-grid-wrapper {
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: rgba(10, 14, 26, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.list-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.list-grid::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 3px;
+}
+
+.list-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.6);
 }
 
 .event-row {
@@ -192,6 +252,41 @@ const closeModal = () => {
   flex-shrink: 0;
   font-size: 1.5rem;
   color: rgba(226, 232, 240, 0.4);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.page-btn {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.page-btn.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .modal-overlay {
