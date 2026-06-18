@@ -24,7 +24,8 @@
           @click="handleCardClick(index)"
         >
           <div class="card-left">
-            <div class="avatar-placeholder">{{ member.name.charAt(0) }}</div>
+            <img v-if="member.avatar" :src="member.avatar" class="avatar-image" :alt="member.name" />
+            <div v-else class="avatar-placeholder">{{ member.name.charAt(0) }}</div>
             <h3 class="member-name">{{ member.name }}</h3>
           </div>
           <div class="card-right">
@@ -67,6 +68,7 @@ interface Member {
   group?: string;
   role: string;
   bio?: string;
+  avatar?: string;
   contact: { label: string; url: string }[];
 }
 
@@ -270,6 +272,15 @@ const handleCardClick = (index: number) => {
   font-size: 2rem;
   font-weight: bold;
   color: white;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+.avatar-image {
+  width: 85%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
   margin-bottom: 1rem;
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }

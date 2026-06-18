@@ -33,6 +33,7 @@ const members = defineCollection({
     group: z.string().optional(),
     role: z.string(),
     bio: z.string().optional(),
+    avatar: z.string().optional(),
     contact: z.array(z.object({
       label: z.string(),
       url: z.string(),
