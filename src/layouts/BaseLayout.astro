@@ -15,9 +15,15 @@ const {
 
 const allGroups = await getCollection('groups');
 const groups = allGroups
-  .filter(g => g.data.active)
-  .sort((a, b) => a.data.order - b.data.order)
-  .map(g => ({ name: g.data.name, slug: g.data.slug }));
+  .map(g => ({
+    name: g.data.name,
+    slug: g.data.slug,
+    order: g.data.order,
+    tagline: g.data.tagline,
+    description: g.data.description,
+    color: g.data.color,
+  }))
+  .sort((a, b) => a.order - b.order);
 ---
 
 <html lang="zh-TW">

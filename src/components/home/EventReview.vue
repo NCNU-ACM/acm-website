@@ -43,7 +43,19 @@ import Background from '../common/Background.vue';
 import { useScrollReveal } from '../useScrollReveal';
 
 const props = defineProps<{
-  events: { id: string; title: string; date: string }[];
+  events: {
+    id: string;
+    title: string;
+    date: string;
+    type: string;
+    group: string;
+    location?: string;
+    description: string;
+    content?: string;
+    links?: { label: string; url: string }[];
+    registration?: string;
+  }[];
+  groups: { slug: string; name: string }[];
 }>();
 
 const reversedEvents = computed(() => [...props.events].reverse());

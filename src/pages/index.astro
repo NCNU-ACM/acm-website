@@ -8,43 +8,66 @@ import JoinSection from '../components/home/JoinSection.vue';
 import { getCollection } from 'astro:content';
 
 const allGroups = await getCollection('groups');
-const groups = allGroups.sort((a, b) => a.data.order - b.data.order);
+const groups = allGroups
+  .map(g => ({
+    name: g.data.name,
+    slug: g.data.slug,
+    order: g.data.order,
+    tagline: g.data.tagline,
+    description: g.data.description,
+    color: g.data.color,
+  }))
+  .sort((a, b) => a.order - b.order);
 
 const allEvents = await getCollection('events');
 const today = new Date();
 
 const upcoming = allEvents
-  .filter(e => e.data.date >= today)
-  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
+  .map(e => ({
+    id: e.id,
+    title: e.data.title,
+    date: e.data.date.toLocaleDateString('zh-TW'),
+    dateValue: e.data.date.valueOf(),
+    type: e.data.type,
+    group: e.data.group,
+    location: e.data.location,
+    description: e.data.description,
+    content: e.data.content,
+    links: e.data.links || [],
+    registration: e.data.registration,
+  }))
+  .filter(e => e.dateValue >= today.valueOf())
+  .sort((a, b) => a.dateValue - b.dateValue)
   .slice(0, 3);
 
 const past = allEvents
-  .filter(e => e.data.date < today)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map(e => ({
+    id: e.id,
+    title: e.data.title,
+    date: e.data.date.toLocaleDateString('zh-TW'),
+    dateValue: e.data.date.valueOf(),
+    type: e.data.type,
+    group: e.data.group,
+    location: e.data.location,
+    description: e.data.description,
+    content: e.data.content,
+    links: e.data.links || [],
+    registration: e.data.registration,
+  }))
+  .filter(e => e.dateValue < today.valueOf())
+  .sort((a, b) => b.dateValue - a.dateValue)
   .slice(0, 6);
 ---
 
 <BaseLayout title="首頁">
   <div id="fullpage">
     <div class="section"><HeroSection client:load /></div>
-    <div class="section"><GroupsSection groups={groups.map(g => g.data)} client:load /></div>
+    <div class="section"><GroupsSection groups={groups} client:load /></div>
     <div class="section">
-      <UpcomingEvents events={upcoming.map(e => ({
-        id: e.id,
-        title: e.data.title,
-        date: e.data.date.toLocaleDateString('zh-TW'),
-        type: e.data.type,
-        group: e.data.group,
-        location: e.data.location,
-        description: e.data.description,
-      }))} client:load />
+      <UpcomingEvents events={upcoming} groups={groups} client:load />
     </div>
     <div class="section">
-      <EventReview events={past.map(e => ({
-        id: e.id,
-        title: e.data.title,
-        date: e.data.date.toLocaleDateString('zh-TW'),
-      }))} client:load />
+      <EventReview events={past} groups={groups} client:load />
     </div>
     <div class="section"><JoinSection client:load /></div>
   </div>
@@ -83,6 +106,11 @@ const past = allEvents
 
   let wheelTimeout: ReturnType<typeof setTimeout>;
   window.addEventListener('wheel', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.modal')) {
+      return;
+    }
+
     e.preventDefault();
     if (isScrolling) return;
     
