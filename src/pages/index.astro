@@ -74,6 +74,11 @@ const past = allEvents
 </BaseLayout>
 
 <script>
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+  
   const sections = document.querySelectorAll('.section');
   let currentIndex = 0;
   let isScrolling = false;
