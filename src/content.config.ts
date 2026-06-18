@@ -48,6 +48,9 @@ const showcase = defineCollection({
     group: z.string(),
     date: z.date(),
     description: z.string(),
+    related_event: z.string().optional(),
+    cover_image: z.string().optional(),
+    gallery: z.array(z.string()).optional(),
     tags: z.array(z.string()).optional(),
     links: z.array(z.object({
       label: z.string(),
