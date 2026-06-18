@@ -10,7 +10,7 @@
       </div>
 
       <div class="carousel-wrapper" data-reveal data-reveal-delay="200">
-        <button class="carousel-btn left" @click="prev" :disabled="currentSlide === 0">‹</button>
+        <button v-if="events.length > visibleCount" class="carousel-btn left" @click="prev" :disabled="currentSlide === 0">‹</button>
 
         <div
           class="carousel-track"
@@ -49,10 +49,10 @@
           </a>
         </div>
 
-        <button class="carousel-btn right" @click="next" :disabled="currentSlide >= events.length - visibleCount">›</button>
+        <button v-if="events.length > visibleCount" class="carousel-btn right" @click="next" :disabled="currentSlide >= events.length - visibleCount">›</button>
       </div>
 
-      <div class="dots" data-reveal data-reveal-delay="400">
+      <div v-if="events.length > visibleCount" class="dots" data-reveal data-reveal-delay="400">
         <span
           v-for="(_, i) in events"
           :key="i"
@@ -175,7 +175,7 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
 
 .event-card {
   flex: 0 0 calc(33.333% - 1rem);
-  aspect-ratio: 25 / 26;
+  min-height: 240px;
   border-radius: 0.75rem;
   border: 2px solid rgba(255, 255, 255, 0.1);
   background: rgba(10, 14, 26, 0.01);
@@ -224,7 +224,6 @@ const next = () => goTo(Math.min(props.events.length - 1, currentSlide.value + 1
 }
 
 .empty-card {
-  aspect-ratio: unset;
   display: flex;
   align-items: center;
   justify-content: center;
