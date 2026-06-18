@@ -9,7 +9,6 @@ const allEvents = await getCollection('events');
 const events = allEvents
   .map(e => ({
     id: e.id,
-    semester: e.id.split('/')[0],
     title: e.data.title,
     date: e.data.date.toLocaleDateString('zh-TW'),
     dateValue: e.data.date.valueOf(),
@@ -17,6 +16,8 @@ const events = allEvents
     type: e.data.type,
     location: e.data.location,
     description: e.data.description,
+    content: e.data.content,
+    links: e.data.links || [],
     registration: e.data.registration,
   }))
   .sort((a, b) => b.dateValue - a.dateValue);

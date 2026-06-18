@@ -19,9 +19,14 @@ const events = defineCollection({
     title: z.string(),
     date: z.date(),
     group: z.string(),
-    type: z.enum(['招募', '演講', '競賽', '工作坊', '其他']),
+    type: z.string(),
     location: z.string().optional(),
     description: z.string(),
+    content: z.string().optional(),
+    links: z.array(z.object({
+      label: z.string(),
+      url: z.string(),
+    })).optional(),
     registration: z.string().optional(),
   }),
 });

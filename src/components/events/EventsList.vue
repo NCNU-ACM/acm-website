@@ -69,13 +69,14 @@ import { ref, computed } from 'vue';
 
 interface EventItem {
   id: string;
-  semester: string;
   title: string;
   date: string;
   group: string;
   type: string;
   location?: string;
   description: string;
+  content?: string;
+  links?: { label: string; url: string }[];
   registration?: string;
 }
 
