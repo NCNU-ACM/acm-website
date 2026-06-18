@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 
 interface EventItem {
   id: string;
@@ -140,8 +140,17 @@ const relatedShowcase = computed(() => {
   return props.showcaseItems.find(s => s.related_event === props.event!.id) || null;
 });
 
-watch(() => props.event, () => {
+watch(() => props.event, (newEvent) => {
   viewMode.value = 'announcement';
+  if (newEvent) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+});
+
+onUnmounted(() => {
+  document.body.style.overflow = '';
 });
 
 const groupName = (slug: string) => {
