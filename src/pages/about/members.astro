@@ -1,45 +1,72 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Background from '../../components/common/Background.vue';
+import MembersCarousel from '../../components/about/MembersCarousel.vue';
 import { getCollection } from 'astro:content';
 
 const allMembers = await getCollection('members');
-const currentMembers = allMembers.filter(m => m.data.active);
 
-const groupOrder = ['system', 'international', 'game', 'case'];
-const groupNames: Record<string, string> = {
-  system: '系統組',
-  international: '國際組',
-  game: '遊戲組',
-  case: '接案組',
-};
+// 從 entry.id 解析出學期（id 格式類似 "1141/20240615143022"）
+const membersWithSemester = allMembers.map(m => ({
+  id: m.id,
+  semester: m.id.split('/')[0],
+  name: m.data.name,
+  group: m.data.group,
+  role: m.data.role,
+  contact: m.data.contact || [],
+}));
+
+const semesters = [...new Set(membersWithSemester.map(m => m.semester))].sort().reverse();
+const latestSemester = semesters[0];
 ---
 
 <BaseLayout title="成員介紹">
-  <div class="max-w-4xl mx-auto px-8 py-16">
-    <h1 class="text-4xl font-bold mb-8" style="color: var(--color-accent);">成員介紹</h1>
+  <div class="page-container">
+    <Background client:load />
+    <div class="relative z-10">
+      <div class="hero-area">
+        <p class="text-sm tracking-widest mb-2 section-label">OUR TEAM</p>
+        <h1 class="page-title text-5xl md:text-6xl font-bold">成員介紹</h1>
+      </div>
 
-    {currentMembers.length === 0 ? (
-      <p style="color: var(--color-text-muted);">目前沒有成員資料</p>
-    ) : (
-      groupOrder.map(groupKey => {
-        const members = currentMembers.filter(m => m.data.group === groupKey);
-        if (members.length === 0) return null;
-        return (
-          <div class="mb-12">
-            <h2 class="text-2xl font-bold mb-4">{groupNames[groupKey]}</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {members.map(m => (
-                <div class="p-4 rounded-lg text-center"
-                     style="background-color: var(--color-surface); border: 1px solid var(--color-border);">
-                  <div class="w-16 h-16 mx-auto mb-2 rounded-full" style="background-color: var(--color-border);"></div>
-                  <p class="font-bold">{m.data.name}</p>
-                  <p class="text-sm" style="color: var(--color-text-muted);">{m.data.role}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })
-    )}
+      <MembersCarousel
+        members={membersWithSemester}
+        semesters={semesters}
+        latestSemester={latestSemester}
+        client:load
+      />
+    </div>
   </div>
 </BaseLayout>
+
+<style>
+  .page-container {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(to top, #030b23 0%, #063238 100%);
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    overflow: hidden;
+  }
+
+  .hero-area {
+    text-align: center;
+    padding: 0 2rem 3rem;
+  }
+
+  .page-title {
+    background: linear-gradient(to top right, #3b82f6 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter:
+      drop-shadow(0 0 12px rgba(59, 130, 246, 0.6))
+      drop-shadow(0 0 25px rgba(52, 211, 153, 0.4))
+      drop-shadow(2px 4px 0px rgba(0, 0, 0, 0.6));
+  }
+
+  .section-label {
+    color: rgba(96, 165, 250, 0.8);
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  }
+</style>

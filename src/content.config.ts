@@ -30,8 +30,9 @@ const members = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './content/members' }),
   schema: z.object({
     name: z.string(),
-    group: z.string(),
+    group: z.string().optional(),
     role: z.string(),
+    bio: z.string().optional(),
     contact: z.array(z.object({
       label: z.string(),
       url: z.string(),
