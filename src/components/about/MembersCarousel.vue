@@ -201,16 +201,17 @@ const handleCardClick = (index: number) => {
 }
 
 .stage {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center;
   width: 100%;
   max-width: 900px;
 }
 
 .cards-track {
   position: relative;
-  flex: 1;
+  width: 100%;
   height: 320px;
   display: flex;
   align-items: center;
@@ -318,6 +319,9 @@ const handleCardClick = (index: number) => {
 }
 
 .nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
@@ -327,11 +331,18 @@ const handleCardClick = (index: number) => {
   font-size: 1.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 20;
+}
+
+.nav-btn.left {
+  left: -10rem;
+}
+
+.nav-btn.right {
+  right: -10rem;
 }
 
 .nav-btn:hover {
