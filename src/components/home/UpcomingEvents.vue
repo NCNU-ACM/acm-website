@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <EventModal :event="selectedEvent" :groups="groups" @close="closeModal" />
+    <EventModal :event="selectedEvent" :groups="groups" :showcase-items="showcaseItems" @close="closeModal" />
   </div>
 </template>
 
@@ -86,9 +86,23 @@ interface EventItem {
   registration?: string;
 }
 
+interface ShowcaseItem {
+  id: string;
+  title: string;
+  group: string;
+  date: string;
+  description: string;
+  related_event?: string;
+  cover_image?: string;
+  gallery?: string[];
+  tags?: string[];
+  links?: { label: string; url: string }[];
+}
+
 const props = defineProps<{
   events: EventItem[];
   groups: { slug: string; name: string }[];
+  showcaseItems: ShowcaseItem[];
 }>();
 
 const { containerRef } = useScrollReveal();

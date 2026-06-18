@@ -57,6 +57,20 @@ const past = allEvents
   .filter(e => e.dateValue < today.valueOf())
   .sort((a, b) => b.dateValue - a.dateValue)
   .slice(0, 6);
+
+const allShowcase = await getCollection('showcase');
+const showcaseItems = allShowcase.map(s => ({
+  id: s.id,
+  title: s.data.title,
+  group: s.data.group,
+  date: s.data.date.toLocaleDateString('zh-TW'),
+  description: s.data.description,
+  related_event: s.data.related_event,
+  cover_image: s.data.cover_image,
+  gallery: s.data.gallery || [],
+  tags: s.data.tags || [],
+  links: s.data.links || [],
+}));
 ---
 
 <BaseLayout title="首頁">
@@ -64,10 +78,10 @@ const past = allEvents
     <div class="section"><HeroSection client:load /></div>
     <div class="section"><GroupsSection groups={groups} client:load /></div>
     <div class="section">
-      <UpcomingEvents events={upcoming} groups={groups} client:load />
+      <UpcomingEvents events={upcoming} groups={groups} showcaseItems={showcaseItems} client:load />
     </div>
     <div class="section">
-      <EventReview events={past} groups={groups} client:load />
+      <EventReview events={past} groups={groups} showcaseItems={showcaseItems} client:load />
     </div>
     <div class="section"><JoinSection client:load /></div>
   </div>
@@ -78,7 +92,7 @@ const past = allEvents
     history.scrollRestoration = 'manual';
   }
   window.scrollTo(0, 0);
-  
+
   const sections = document.querySelectorAll('.section');
   let currentIndex = 0;
   let isScrolling = false;
