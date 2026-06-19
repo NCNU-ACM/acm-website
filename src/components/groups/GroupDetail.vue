@@ -63,31 +63,36 @@
       <div v-else class="showcase-carousel">
         <button class="carousel-nav left" @click="showcasePrev">‹</button>
 
-        <div
-          class="showcase-slide"
-          @mouseenter="pauseCarousel"
-          @mouseleave="resumeCarousel"
-          @click="openShowcaseModal(showcase[showcaseIndex])"
-        >
-          <div class="showcase-cover">
-            <img
-              v-if="showcase[showcaseIndex].cover_image"
-              :src="showcase[showcaseIndex].cover_image"
-              class="cover-img"
-              :alt="showcase[showcaseIndex].title"
-            />
-            <div v-else class="cover-placeholder">
-              <span>{{ showcase[showcaseIndex].title.charAt(0) }}</span>
+        <div class="slide-container">
+          <Transition :name="slideDirection === 'left' ? 'slide-left' : 'slide-right'">
+            <div
+              :key="showcaseIndex"
+              class="showcase-slide"
+              @mouseenter="pauseCarousel"
+              @mouseleave="resumeCarousel"
+              @click="openShowcaseModal(showcase[showcaseIndex])"
+            >
+              <div class="showcase-cover">
+                <img
+                  v-if="showcase[showcaseIndex].cover_image"
+                  :src="showcase[showcaseIndex].cover_image"
+                  class="cover-img"
+                  :alt="showcase[showcaseIndex].title"
+                />
+                <div v-else class="cover-placeholder">
+                  <span>{{ showcase[showcaseIndex].title.charAt(0) }}</span>
+                </div>
+              </div>
+              <div class="showcase-info">
+                <p class="showcase-date">{{ showcase[showcaseIndex].date }}</p>
+                <h3 class="showcase-title">{{ showcase[showcaseIndex].title }}</h3>
+                <p class="showcase-desc">{{ showcase[showcaseIndex].description }}</p>
+                <div v-if="showcase[showcaseIndex].tags.length" class="showcase-tags">
+                  <span v-for="tag in showcase[showcaseIndex].tags" :key="tag" class="tag">{{ tag }}</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="showcase-info">
-            <p class="showcase-date">{{ showcase[showcaseIndex].date }}</p>
-            <h3 class="showcase-title">{{ showcase[showcaseIndex].title }}</h3>
-            <p class="showcase-desc">{{ showcase[showcaseIndex].description }}</p>
-            <div v-if="showcase[showcaseIndex].tags.length" class="showcase-tags">
-              <span v-for="tag in showcase[showcaseIndex].tags" :key="tag" class="tag">{{ tag }}</span>
-            </div>
-          </div>
+          </Transition>
         </div>
 
         <button class="carousel-nav right" @click="showcaseNext">›</button>
@@ -201,17 +206,22 @@ const avatarUrl = (member: Member) => {
 };
 
 const showcaseIndex = ref(0);
+const slideDirection = ref<'left' | 'right'>('left');
+const isModalOpen = ref(false);
 let carouselTimer: ReturnType<typeof setInterval> | null = null;
 
 const showcaseNext = () => {
+  slideDirection.value = 'left';
   showcaseIndex.value = (showcaseIndex.value + 1) % props.showcase.length;
 };
 
 const showcasePrev = () => {
+  slideDirection.value = 'right';
   showcaseIndex.value = (showcaseIndex.value - 1 + props.showcase.length) % props.showcase.length;
 };
 
 const showcaseGoTo = (i: number) => {
+  slideDirection.value = i > showcaseIndex.value ? 'left' : 'right';
   showcaseIndex.value = i;
 };
 
@@ -227,7 +237,6 @@ const pauseCarousel = () => {
   }
 };
 
-const isModalOpen = ref(false);
 const resumeCarousel = () => {
   if (isModalOpen.value) return;
   startCarousel();
@@ -448,7 +457,6 @@ const closeShowcaseModal = () => {
   font-size: 0.95rem;
 }
 
-/* 成果展示輪播 */
 .showcase-carousel {
   position: relative;
   display: flex;
@@ -456,6 +464,13 @@ const closeShowcaseModal = () => {
   align-items: center;
   gap: 1rem;
   padding: 0 2rem;
+}
+
+.slide-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  min-height: 220px;
 }
 
 .showcase-slide {
@@ -597,5 +612,40 @@ const closeShowcaseModal = () => {
 .carousel-dot.active {
   background: rgba(59, 130, 246, 0.9);
   transform: scale(1.3);
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.slide-left-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-right-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-left-leave-active,
+.slide-right-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 </style>
