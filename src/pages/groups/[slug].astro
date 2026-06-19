@@ -66,10 +66,14 @@ const groupShowcase = allShowcase
   .map(s => ({
     id: s.id,
     title: s.data.title,
+    group: s.data.group,
     date: s.data.date.toLocaleDateString('zh-TW'),
     description: s.data.description,
     cover_image: s.data.cover_image,
+    gallery: s.data.gallery || [],
     tags: s.data.tags || [],
+    links: s.data.links || [],
+    related_event: s.data.related_event,
   }));
 ---
 

@@ -61,7 +61,12 @@
       <h2 class="block-title">成果展示</h2>
       <div v-if="showcase.length === 0" class="empty">目前沒有成果展示資料</div>
       <div v-else class="showcase-grid">
-        <div v-for="item in showcase" :key="item.id" class="showcase-card">
+        <div
+          v-for="item in showcase"
+          :key="item.id"
+          class="showcase-card"
+          @click="openShowcaseModal(item)"
+        >
           <div class="showcase-cover">
             <img v-if="item.cover_image" :src="item.cover_image" class="cover-img" :alt="item.title" />
             <div v-else class="cover-placeholder">
@@ -79,12 +84,20 @@
         </div>
       </div>
     </div>
+
+    <ShowcaseModal
+      :showcase="selectedShowcase"
+      :events="events"
+      :groups="groupsForModal"
+      @close="closeShowcaseModal"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import EventListPanel from '../common/EventListPanel.vue';
+import ShowcaseModal from '../common/ShowcaseModal.vue';
 
 interface Group {
   slug: string;
@@ -131,10 +144,14 @@ interface ShowcaseItem {
 interface ShowcaseCard {
   id: string;
   title: string;
+  group: string;
   date: string;
   description: string;
   cover_image?: string;
+  gallery?: string[];
   tags: string[];
+  links?: { label: string; url: string }[];
+  related_event?: string;
 }
 
 const props = defineProps<{
@@ -162,6 +179,16 @@ const next = () => {
 const avatarUrl = (member: Member) => {
   if (member.avatar) return member.avatar;
   return `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${encodeURIComponent(member.name)}`;
+};
+
+const selectedShowcase = ref<ShowcaseCard | null>(null);
+
+const openShowcaseModal = (item: ShowcaseCard) => {
+  selectedShowcase.value = item;
+};
+
+const closeShowcaseModal = () => {
+  selectedShowcase.value = null;
 };
 </script>
 
@@ -369,11 +396,13 @@ const avatarUrl = (member: Member) => {
   background: rgba(10, 14, 26, 0.5);
   overflow: hidden;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .showcase-card:hover {
   border-color: rgba(59, 130, 246, 0.3);
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+  transform: translateY(-3px);
 }
 
 .showcase-cover {
@@ -386,6 +415,11 @@ const avatarUrl = (member: Member) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.showcase-card:hover .cover-img {
+  transform: scale(1.03);
 }
 
 .cover-placeholder {
