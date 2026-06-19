@@ -28,8 +28,8 @@
         </div>
         <h2 class="modal-title">{{ event.title }}</h2>
         <div class="modal-meta">
-          <span>📅 {{ event.date }}</span>
-          <span v-if="event.location">📍 {{ event.location }}</span>
+          <span>活動日期: {{ event.date }}</span>
+          <span v-if="event.location">活動地點: {{ event.location }}</span>
         </div>
 
         <p v-if="event.content" class="modal-description">{{ event.content }}</p>
