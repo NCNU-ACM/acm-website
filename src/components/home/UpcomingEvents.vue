@@ -71,7 +71,7 @@
 import { ref } from 'vue';
 import Background from '../common/Background.vue';
 import EventModal from '../common/EventModal.vue';
-import { useScrollReveal } from '../useScrollReveal';
+import { useScrollReveal } from '../../composables/useScrollReveal.ts';
 
 interface EventItem {
   id: string;

@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import Background from '../common/Background.vue';
-import { useScrollReveal } from '../useScrollReveal';
+import { useScrollReveal } from '../../composables/useScrollReveal.ts';
 
 const { containerRef } = useScrollReveal();
 </script>

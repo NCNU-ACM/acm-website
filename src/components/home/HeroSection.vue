@@ -50,7 +50,7 @@ import { ref, onMounted } from 'vue';
 import figlet from 'figlet';
 import standard from 'figlet/importable-fonts/Standard.js';
 import Background from '../common/Background.vue';
-import { useScrollReveal } from '../useScrollReveal';
+import { useScrollReveal } from '../../composables/useScrollReveal.ts';
 
 const { containerRef } = useScrollReveal();
 
