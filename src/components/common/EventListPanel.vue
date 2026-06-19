@@ -7,6 +7,7 @@
           v-for="event in paginatedEvents"
           :key="event.id"
           class="event-row"
+          :class="{ 'announcement-row': event.isAnnouncement }"
           @click="openModal(event)"
           @mouseenter="startMarquee(event.id)"
           @mouseleave="stopMarquee(event.id)"
@@ -30,6 +31,8 @@
               </p>
             </div>
           </div>
+          <div v-if="event.isAnnouncement" class="row-tag announcement-tag">通知</div>
+          <div v-else-if="showGroup && event.group" class="row-tag group-tag">{{ groupName(event.group) }}</div>
           <div class="row-arrow">›</div>
         </div>
       </div>
@@ -68,6 +71,7 @@ interface EventItem {
   content?: string;
   links?: { label: string; url: string }[];
   registration?: string;
+  isAnnouncement?: boolean;
 }
 
 interface ShowcaseItem {
@@ -89,10 +93,12 @@ const props = defineProps<{
   showcaseItems: ShowcaseItem[];
   pageSize?: number;
   maxHeight?: string;
+  showGroup?: boolean;
 }>();
 
 const pageSize = computed(() => props.pageSize ?? 10);
 const maxHeight = computed(() => props.maxHeight ?? '640px');
+const showGroup = computed(() => props.showGroup ?? false);
 
 const currentPage = ref(1);
 const totalPages = computed(() => Math.ceil(props.events.length / pageSize.value));
@@ -105,6 +111,11 @@ const paginatedEvents = computed(() => {
 const goToPage = (page: number) => {
   if (page < 1 || page > totalPages.value) return;
   currentPage.value = page;
+};
+
+const groupName = (slug: string) => {
+  const g = props.groups.find(g => g.slug === slug);
+  return g ? g.name : slug;
 };
 
 const wrapperRefs: Record<string, HTMLElement> = {};
@@ -175,19 +186,9 @@ const formatMonth = (dateStr: string) => `${dateStr.split('/')[1]}月`;
   scrollbar-color: rgba(59, 130, 246, 0.4) rgba(255, 255, 255, 0.05);
 }
 
-.list-grid::-webkit-scrollbar {
-  width: 6px;
-}
-
-.list-grid::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-}
-
-.list-grid::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.4);
-  border-radius: 3px;
-}
+.list-grid::-webkit-scrollbar { width: 6px; }
+.list-grid::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+.list-grid::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 3px; }
 
 .event-row {
   display: flex;
@@ -206,6 +207,15 @@ const formatMonth = (dateStr: string) => `${dateStr.split('/')[1]}月`;
   border-color: rgba(59, 130, 246, 0.4);
   background: rgba(10, 14, 26, 0.7);
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.announcement-row {
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+.announcement-row:hover {
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.1);
 }
 
 .row-date {
@@ -257,6 +267,25 @@ const formatMonth = (dateStr: string) => `${dateStr.split('/')[1]}月`;
   white-space: nowrap;
   transition-property: transform;
   transition-timing-function: linear;
+}
+
+.row-tag {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+}
+
+.announcement-tag {
+  color: rgba(251, 191, 36, 0.9);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.group-tag {
+  color: rgba(96, 165, 250, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .row-arrow {
