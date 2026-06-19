@@ -22,8 +22,9 @@
 
       <div v-if="viewMode === 'announcement'">
         <div class="modal-tags">
-          <span class="tag">{{ event.type }}</span>
-          <span class="tag tag-group">{{ groupName(event.group) }}</span>
+          <span v-if="event.isAnnouncement" class="tag announcement-tag">通知</span>
+          <span v-else class="tag">{{ event.type }}</span>
+          <span v-if="!event.isAnnouncement && event.group" class="tag tag-group">{{ groupName(event.group) }}</span>
         </div>
         <h2 class="modal-title">{{ event.title }}</h2>
         <div class="modal-meta">
@@ -57,8 +58,9 @@
 
       <div v-else-if="relatedShowcase">
         <div class="modal-tags">
-          <span class="tag tag-group">{{ groupName(relatedShowcase.group) }}</span>
-          <span v-for="tag in relatedShowcase.tags" :key="tag" class="tag">{{ tag }}</span>
+          <span v-if="!event.isAnnouncement" class="tag">{{ event.type }}</span>
+          <span v-if="event.isAnnouncement" class="tag announcement-tag">通知</span>
+          <span v-if="!event.isAnnouncement && event.group" class="tag tag-group">{{ groupName(event.group) }}</span>
         </div>
         <h2 class="modal-title">{{ relatedShowcase.title }}</h2>
         <div class="modal-meta">
@@ -108,6 +110,7 @@ interface EventItem {
   content?: string;
   links?: { label: string; url: string }[];
   registration?: string;
+  isAnnouncement?: boolean;
 }
 
 interface ShowcaseItem {
@@ -269,6 +272,12 @@ const groupName = (slug: string) => {
   background: rgba(6, 182, 212, 0.15);
   color: #22d3ee;
   border-color: rgba(6, 182, 212, 0.3);
+}
+
+.announcement-tag {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
 }
 
 .modal-title {
