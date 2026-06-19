@@ -371,16 +371,16 @@ const closeShowcaseModal = () => {
 }
 
 .member-name {
-  font-size: 1rem;
+  font-size: 1.75rem;
   font-weight: bold;
   color: white;
-  padding-top: 0.5rem;
 }
 
 .member-role {
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   color: rgba(96, 165, 250, 0.9);
   margin-bottom: 0.5rem;
+  font-style: bold;
 }
 
 .member-bio {
