@@ -1,0 +1,303 @@
+<template>
+  <div>
+    <div v-if="events.length === 0" class="empty">目前沒有相關活動</div>
+    <div v-else class="list-grid-wrapper">
+      <div class="list-grid">
+        <div
+          v-for="event in paginatedEvents"
+          :key="event.id"
+          class="event-row"
+          @click="openModal(event)"
+          @mouseenter="startMarquee(event.id)"
+          @mouseleave="stopMarquee(event.id)"
+        >
+          <div class="row-date">
+            <span class="date-day">{{ formatDay(event.date) }}</span>
+            <span class="date-month">{{ formatMonth(event.date) }}</span>
+          </div>
+          <div class="row-content">
+            <h3 class="row-title">{{ event.title }}</h3>
+            <div class="marquee-wrapper" :ref="(el) => setWrapperRef(el, event.id)">
+              <p
+                class="row-description"
+                :ref="(el) => setTextRef(el, event.id)"
+                :style="{
+                  transform: `translateX(${marqueeOffsets[event.id] || 0}px)`,
+                  transitionDuration: `${marqueeDurations[event.id] || 0.5}s`
+                }"
+              >
+                {{ event.description }}
+              </p>
+            </div>
+          </div>
+          <div class="row-arrow">›</div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="totalPages > 1" class="pagination">
+      <button class="page-btn" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">‹</button>
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        class="page-btn"
+        :class="{ active: page === currentPage }"
+        @click="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+      <button class="page-btn" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">›</button>
+    </div>
+
+    <EventModal :event="selectedEvent" :groups="groups" :showcase-items="showcaseItems" @close="closeModal" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, reactive } from 'vue';
+import EventModal from './EventModal.vue';
+
+interface EventItem {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  group: string;
+  location?: string;
+  description: string;
+  content?: string;
+  links?: { label: string; url: string }[];
+  registration?: string;
+}
+
+interface ShowcaseItem {
+  id: string;
+  title: string;
+  group: string;
+  date: string;
+  description: string;
+  related_event?: string;
+  cover_image?: string;
+  gallery?: string[];
+  tags?: string[];
+  links?: { label: string; url: string }[];
+}
+
+const props = defineProps<{
+  events: EventItem[];
+  groups: { slug: string; name: string }[];
+  showcaseItems: ShowcaseItem[];
+  pageSize?: number;
+  maxHeight?: string;
+}>();
+
+const pageSize = computed(() => props.pageSize ?? 10);
+const maxHeight = computed(() => props.maxHeight ?? '640px');
+
+const currentPage = ref(1);
+const totalPages = computed(() => Math.ceil(props.events.length / pageSize.value));
+
+const paginatedEvents = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  return props.events.slice(start, start + pageSize.value);
+});
+
+const goToPage = (page: number) => {
+  if (page < 1 || page > totalPages.value) return;
+  currentPage.value = page;
+};
+
+const wrapperRefs: Record<string, HTMLElement> = {};
+const textRefs: Record<string, HTMLElement> = {};
+const marqueeOffsets = reactive<Record<string, number>>({});
+const marqueeDurations = reactive<Record<string, number>>({});
+
+const setWrapperRef = (el: any, id: string) => {
+  if (el) wrapperRefs[id] = el;
+};
+
+const setTextRef = (el: any, id: string) => {
+  if (el) textRefs[id] = el;
+};
+
+const startMarquee = (id: string) => {
+  const wrapper = wrapperRefs[id];
+  const text = textRefs[id];
+  if (!wrapper || !text) return;
+  const overflow = text.scrollWidth - wrapper.clientWidth;
+  if (overflow > 0) {
+    marqueeDurations[id] = overflow / 40;
+    marqueeOffsets[id] = -overflow;
+  }
+};
+
+const stopMarquee = (id: string) => {
+  marqueeDurations[id] = 0.5;
+  marqueeOffsets[id] = 0;
+};
+
+const selectedEvent = ref<EventItem | null>(null);
+
+const openModal = (event: EventItem) => {
+  selectedEvent.value = event;
+};
+
+const closeModal = () => {
+  selectedEvent.value = null;
+};
+
+const formatDay = (dateStr: string) => dateStr.split('/')[2];
+const formatMonth = (dateStr: string) => `${dateStr.split('/')[1]}月`;
+</script>
+
+<style scoped>
+.empty {
+  color: rgba(226, 232, 240, 0.5);
+  font-size: 0.95rem;
+}
+
+.list-grid-wrapper {
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(10, 14, 26, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.list-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: v-bind(maxHeight);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.4) rgba(255, 255, 255, 0.05);
+}
+
+.list-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.list-grid::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 3px;
+}
+
+.event-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 14, 26, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: white;
+}
+
+.event-row:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(10, 14, 26, 0.7);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.row-date {
+  flex-shrink: 0;
+  width: 56px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.date-day {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #60a5fa;
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 0.65rem;
+  color: rgba(226, 232, 240, 0.6);
+  margin-top: 0.2rem;
+}
+
+.row-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.row-description {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: rgba(226, 232, 240, 0.6);
+  white-space: nowrap;
+  transition-property: transform;
+  transition-timing-function: linear;
+}
+
+.row-arrow {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: rgba(226, 232, 240, 0.4);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.page-btn {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.page-btn.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+</style>
