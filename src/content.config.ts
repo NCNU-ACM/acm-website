@@ -14,19 +14,17 @@ const groups = defineCollection({
 });
 
 const events = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.md', base: './content/events' }),
+  loader: glob({ pattern: '**/*.md', base: './content/events' }),
   schema: z.object({
     title: z.string(),
-    date: z.date(),
+    event_date: z.coerce.date(),
+    created_at: z.string(),
     group: z.string(),
     type: z.string(),
     location: z.string().optional(),
     description: z.string(),
     content: z.string().optional(),
-    links: z.array(z.object({
-      label: z.string(),
-      url: z.string(),
-    })).optional(),
+    links: z.array(z.object({ label: z.string(), url: z.string() })).optional(),
     registration: z.string().optional(),
   }),
 });
@@ -68,7 +66,7 @@ const announcements = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/announcements' }),
   schema: z.object({
     title: z.string(),
-    date: z.coerce.date(),
+    created_at: z.string(),
     content: z.string(),
     active: z.boolean().default(false),
   }),

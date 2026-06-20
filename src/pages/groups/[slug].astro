@@ -48,8 +48,8 @@ const groupEvents = allEvents
   .map(e => ({
     id: e.id,
     title: e.data.title,
-    date: e.data.date.toLocaleDateString('zh-TW'),
-    dateValue: e.data.date.valueOf(),
+    date: e.data.event_date.toLocaleDateString('zh-TW'),
+    dateValue: e.data.event_date.valueOf(),
     type: e.data.type,
     group: e.data.group,
     location: e.data.location,

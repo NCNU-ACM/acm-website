@@ -10,8 +10,8 @@ const events = allEvents
   .map(e => ({
     id: e.id,
     title: e.data.title,
-    date: e.data.date.toLocaleDateString('zh-TW'),
-    dateValue: e.data.date.valueOf(),
+    date: e.data.event_date.toLocaleDateString('zh-TW'),
+    dateValue: e.data.event_date.valueOf(),
     group: e.data.group,
     type: e.data.type,
     location: e.data.location,
@@ -45,8 +45,16 @@ const activeAnnouncements = allAnnouncements
   .map(a => ({
     id: a.id,
     title: a.data.title,
-    date: a.data.date.toLocaleDateString('zh-TW'),
-    dateValue: a.data.date.valueOf(),
+    date: new Date(
+      Number(a.data.created_at.slice(0,4)),
+      Number(a.data.created_at.slice(4,6)) - 1,
+      Number(a.data.created_at.slice(6,8))
+    ).toLocaleDateString('zh-TW'),
+    dateValue: new Date(
+      Number(a.data.created_at.slice(0,4)),
+      Number(a.data.created_at.slice(4,6)) - 1,
+      Number(a.data.created_at.slice(6,8))
+    ).valueOf(),
     type: '通知',
     group: '',
     description: a.data.content,
