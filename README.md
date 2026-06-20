@@ -127,20 +127,6 @@ npm run build
 
 建置結果輸出在 `dist/` 資料夾。
 
-## 部署
-
-1. 伺服器需安裝 Node.js 18 以上
-2. clone 本專案到伺服器
-3. 安裝套件並建置：
-```bash
-   npm install
-   npm run build
-```
-4. 使用 Nginx 將 `dist/` 資料夾設定為靜態網站根目錄
-5. 若需要 HTTPS，使用 Certbot 申請 Let's Encrypt 憑證
-
-> `content/` 資料夾的內容由 CMS 後端寫入，正式環境中每次 CMS 有資料異動，後端會觸發本專案重新 `npm run build`（見 `acm-cms-backend` 的 `build_trigger.py`）。
-
 ## 技術棧
 
 - [Astro](https://astro.build/) — 靜態網站框架
