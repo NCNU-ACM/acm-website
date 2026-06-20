@@ -28,7 +28,8 @@
         </div>
         <h2 class="modal-title">{{ event.title }}</h2>
         <div class="modal-meta">
-          <span>活動日期: {{ event.date }}</span>
+          <span v-if="!event.isAnnouncement">活動日期: {{ event.date }}</span>
+          <span v-else>發布日期: {{ event.date }}</span>
           <span v-if="event.location">活動地點: {{ event.location }}</span>
         </div>
 
