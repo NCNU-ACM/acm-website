@@ -1,4 +1,4 @@
-# 安裝與部署指南
+# INSTALL.md — 安裝與部署指南
 
 本文件說明如何從零把 NCNU ACM 官網系統架設起來。照著步驟操作即可完成部署，不需要理解程式碼內容。
 
@@ -66,17 +66,15 @@ CMS 每次異動資料後會自動把內容備份推送到 `acm-backup`，這需
 | 欄位 | 設定值 |
 |---|---|
 | Token name | 自訂，例如 `acm-cms-backup` |
-| Expiration | 建議一年，到期前需重新申請並更新 `.env` |
+| Expiration | 都可以，到期前需重新申請並更新 `.env` |
 | Resource owner | **NCNU-ACM**（不是個人帳號，選錯會導致推送失敗） |
 | Repository access | **Only select repositories** → 勾選 `acm-backup` |
 
 5. 捲到 **Permissions** 區塊，點 **Add permissions**，找到 **Contents**，設為 **Read and write**
    - 設定完成後 Repositories 標籤旁的數字應顯示 `1`
    - 只需要這一項權限，其他不要加
+   - 這一步很容易漏掉，漏掉會導致推送時出現 403 錯誤
 6. 按 **Generate token**，複製產生的字串
-
-> Token 只會顯示一次，離開頁面後無法再查看。請立即複製並保存。
-> Token 等同密碼，不可以寫進程式碼或 commit 進 git。
 
 ---
 
@@ -108,11 +106,40 @@ GIT_USER_EMAIL=cms-bot@ncnu-acm.local
 
 `CMS_PASSWORD` 請務必修改，不要沿用範本值。
 
-確認 `.env` 已被 git 忽略（`acm-cms-backend/.gitignore` 應包含 `.env`），避免 token 外流。
+若暫時沒有 token，可將 `GITHUB_TOKEN` 留空。系統仍可正常運作，只是不會推送備份到 GitHub。
 
 ---
 
-## 五、啟動服務
+## 五、設定網域
+
+官網的 canonical 連結、sitemap 與社群分享預覽圖都需要完整網址，這些由設定檔中的網域產生。**網域確定後必須修改以下兩個地方**，否則搜尋引擎會收錄到錯誤位址。
+
+**1. `acm-website/astro.config.ts`**
+
+```ts
+site: 'https://acm.ncnu.edu.tw',   // 改成實際網域
+```
+
+**2. `acm-website/public/robots.txt`**
+
+```
+Sitemap: https://acm.ncnu.edu.tw/sitemap-index.xml
+```
+
+修改後需重新建置才會生效：
+
+```bash
+cd acm-cms-backend
+docker compose restart
+```
+
+驗證方式見第七節。
+
+> 網站上線後，還需到 [Google Search Console](https://search.google.com/search-console) 驗證網域所有權並提交 sitemap，Google 才會開始收錄。新網域通常需數天到數週才會出現在搜尋結果。
+
+---
+
+## 六、啟動服務
 
 在 `acm-cms-backend/` 目錄下執行：
 
@@ -146,7 +173,7 @@ docker compose up -d
 
 ---
 
-## 六、驗證安裝
+## 七、驗證安裝
 
 依序檢查以下三個網址（本機測試用 `localhost`，伺服器上換成主機位址）：
 
@@ -156,17 +183,17 @@ docker compose up -d
 | `http://localhost:8000/` | 顯示官網首頁 |
 | `http://localhost:8000/admin/` | 顯示 CMS 登入畫面（結尾斜線不可省略） |
 
-接著測試完整資料流：
+### 驗證完整資料流
 
 1. 進入 `/admin/`，以 `.env` 設定的帳密登入
 2. 到「全體通知」頁面，新增一筆測試資料並儲存
-3. 檢查以下三件事：
+3. 檢查以下項目：
 
 ```bash
 # 檔案是否寫入
 ls acm-website/content/announcements/
 
-# 查看容器日誌，應出現 [backup] 已推送到 acm-backup 與 [build] 完成
+# 查看日誌，應出現 [backup] 已推送到 acm-backup 與 [build] 完成
 docker compose logs --tail 50
 ```
 
@@ -175,19 +202,31 @@ docker compose logs --tail 50
 
 五項皆通過代表安裝成功。測試資料請記得刪除。
 
+### 驗證 SEO 設定
+
+```bash
+# sitemap 是否產生
+docker exec acm-website ls /app/acm-website/dist | grep sitemap
+
+# canonical 網址是否正確
+docker exec acm-website grep canonical /app/acm-website/dist/index.html
+```
+
+應分別看到 `sitemap-index.xml` 與指向正式網域的 canonical 連結。
+
 ---
 
-## 七、對外服務設定
+## 八、對外服務設定
 
 容器只監聽 `8000` port，提供的是純 HTTP 服務。正式對外時需在容器前方架設反向代理處理網域與 HTTPS 憑證。
 
-反向代理需要將所有請求轉發至 `http://127.0.0.1:8000`，不需要針對 `/api` 或 `/admin` 做額外的路徑規則，容器內部已處理路由。
+反向代理需將所有請求轉發至 `http://127.0.0.1:8000`，不需要針對 `/api` 或 `/admin` 做額外的路徑規則，容器內部已處理路由。
 
-若要改變對外 port，修改 `docker-compose.yml` 的 `ports` 設定，例如改成 `"8080:8000"` 則對外變為 8080，容器內部維持 8000 不動。
+若要改變對外 port，修改 `docker-compose.yml` 的 `ports` 設定，例如改成 `"8080:8000"` 則對外變為 8080，冒號右側的容器內部 port 維持 8000 不要更動。
 
 ---
 
-## 八、日常維運
+## 九、日常維運
 
 ### 查看日誌
 
@@ -201,7 +240,7 @@ docker compose logs --tail 100  # 查看最近 100 行
 ```bash
 docker compose stop     # 停止
 docker compose start    # 啟動
-docker compose restart  # 重啟
+docker compose restart  # 重啟（修改 .env 或網站原始碼後使用）
 ```
 
 ### 更新程式碼
@@ -216,9 +255,38 @@ cd acm-cms-backend && git pull
 docker compose up -d --build
 ```
 
+### 新增或更新前端套件
+
+**這個情況需要額外步驟，只做 `git pull` 與 `--build` 不會生效。**
+
+容器內的 `node_modules` 存放在獨立的 Docker volume 中，與主機上的目錄互不相通。因此在主機執行 `npm install` 安裝的套件，容器內並不會有，重啟後會出現找不到模組的錯誤。
+
+正確做法是刪除該 volume，讓容器下次啟動時重新安裝：
+
+```bash
+cd acm-cms-backend
+docker compose down
+
+# 查看實際的 volume 名稱
+docker volume ls | grep node_modules
+
+# 刪除官網的（若更新的是 CMS 後台套件，改刪 cms_node_modules）
+docker volume rm acm-cms-backend_website_node_modules
+
+docker compose up -d
+```
+
+刪除後首次啟動會重新安裝所有套件，時間與初次安裝相當。
+
+若不確定是哪一邊，兩個都刪除即可：
+
+```bash
+docker volume rm acm-cms-backend_website_node_modules acm-cms-backend_cms_node_modules
+```
+
 ### 修改帳密或更新 Token
 
-修改 `.env` 後必須重啟容器才會生效：
+修改 `.env` 後必須重啟容器才會生效，環境變數只在啟動時讀取：
 
 ```bash
 docker compose restart
@@ -238,13 +306,15 @@ cp -r acm-backup/showcase acm-website/content/
 docker compose restart
 ```
 
+Windows 環境請改用 `Copy-Item -Recurse` 或檔案總管直接複製。
+
 ---
 
-## 九、常見問題
+## 十、常見問題
 
 **官網頁面顯示空白，沒有任何活動或小組資料**
 
-`acm-website/content/` 底下沒有資料。若為全新安裝屬正常現象，透過 CMS 新增資料即可。若原本有資料卻消失，依第八節「從備份還原內容」處理。
+`acm-website/content/` 底下沒有資料。若為全新安裝屬正常現象，透過 CMS 新增資料即可。若原本有資料卻消失，依第九節「從備份還原內容」處理。
 
 **`/api/health` 顯示 `website_built: false`**
 
@@ -253,6 +323,16 @@ docker compose restart
 **日誌出現 `[backup] push 失敗（return code 128）`**
 
 Token 權限不足或設定錯誤。回到第三步檢查：Resource owner 是否為 NCNU-ACM、是否已加入 Contents 的 Read and write 權限。重新產生 token 並更新 `.env` 後執行 `docker compose restart`。
+
+可用以下指令查看實際錯誤訊息：
+
+```bash
+docker exec -it acm-website git -C /app/acm-backup push origin main
+```
+
+**建置失敗，出現 `Cannot find module '@astrojs/...'` 或類似的找不到套件錯誤**
+
+主機端安裝了新套件但容器內沒有。依第九節「新增或更新前端套件」處理。
 
 **CMS 後台頁面顯示空白或載入失敗**
 
@@ -271,9 +351,13 @@ docker compose up -d --build
 
 環境變數只在容器啟動時讀取，必須執行 `docker compose restart`。
 
+**修改網站原始碼後畫面沒有變化**
+
+官網是靜態網站，在容器啟動時建置。修改原始碼後執行 `docker compose restart` 重新建置。
+
 ---
 
-## 十、系統架構參考
+## 十一、系統架構參考
 
 各元件的詳細說明請參閱各 repo 的 README：
 
