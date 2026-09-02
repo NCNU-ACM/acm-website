@@ -12,7 +12,7 @@ interface Props {
 
 const {
   title,
-  description = '國立暨南國際大學 ACM 程式設計研究社，涵蓋演算法、系統、接案、遊戲等小組，定期舉辦讀書會、講座與競賽。',
+  description = '國立暨南國際大學 ACM 學生分會，涵蓋演算法、系統、接案、遊戲等小組，定期舉辦讀書會、講座與競賽。',
   image = '/og-image.png',
   noindex = false,
 } = Astro.props;
@@ -20,7 +20,7 @@ const {
 const SITE_NAME = 'NCNU ACM';
 
 // 沒有傳 title 的頁面（例如首頁）只顯示站名，避免變成 "NCNU ACM | NCNU ACM"
-const pageTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} 國立暨南國際大學 ACM 程式設計研究社`;
+const pageTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} 國立暨南國際大學 ACM 學生分會`;
 
 // canonical 與 og:image 需要絕對網址，來源是 astro.config.ts 的 site 設定
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
