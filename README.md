@@ -18,7 +18,7 @@
 |---|---|---|
 | [acm-website](https://github.com/NCNU-ACM/acm-website)（本專案） | 官網前台 | Astro + React |
 | [acm-cms-backend](https://github.com/NCNU-ACM/acm-cms-backend) | CMS 後端 API | FastAPI |
-| [acm-cms-frontend](https://github.com/NCNU-ACM/acm-cms-frontend) | CMS 後台介面 | Vue 3 |
+| [acm-cms-frontend](https://github.com/NCNU-ACM/acm-cms-frontend) | CMS 後台介面 | React + TypeScript |
 | [acm-backup](https://github.com/NCNU-ACM/acm-backup) | 內容資料獨立備份 | - |
 
 社團幹部透過 CMS 後台新增或編輯內容（活動、小組、幹部、成果展示、全體通知），CMS 後端會把資料寫成 Markdown 檔案存放在本專案的 `content/` 資料夾，並自動同步備份一份到 `acm-backup` repo。官網前台讀取 `content/` 底下的 Markdown 檔案，在 build 時靜態生成所有頁面。
