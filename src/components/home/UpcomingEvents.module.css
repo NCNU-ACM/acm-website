@@ -64,8 +64,7 @@
   overflow: visible;
   flex: 1;
   scroll-behavior: smooth;
-  /* 原本是 inline style，依 events.length <= visibleCount 決定 center / flex-start；
-     events 最多 3 筆（index.astro 的 slice(0, 3)），所以恆為 center */
+  /* events 最多 3 筆（index.astro 的 slice(0, 3)），剛好排滿一列，所以固定置中 */
   justify-content: center;
 }
 

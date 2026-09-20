@@ -3,8 +3,8 @@
   background: linear-gradient(to top, #030b23 0%, #063238 100%);
 }
 
-/* Vue 的 scoped 會讓 [data-reveal] 只作用於本元件；CSS Modules 不會替屬性選擇器加範圍，
-   所以用 :where(根 class) 限定（不增加 specificity，與同檔其他規則的相對關係跟原本一樣）。
+/* CSS Modules 不會替屬性選擇器加範圍，直接寫 [data-reveal] 會變成全域規則，
+   所以用 :where(根 class) 限定只作用於本元件（:where 不增加 specificity，與同檔其他規則的相對關係不變）。
    .revealed 是 useScrollReveal 以 classList 加的字面 class，必須 :global，不能被雜湊。 */
 :where(.join-container) [data-reveal] {
   opacity: 0;

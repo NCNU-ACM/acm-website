@@ -9,11 +9,11 @@ import {
 } from 'react';
 import { flushSync } from 'react-dom';
 
-// 對應 Vue 的 <Transition :name>，用於「以 key 換掉單一子元素」的情況（預設 mode：新舊同時存在）。
-// class 序列與 Vue 相同：
+// 以 key 換掉單一子元素時的進出場轉場：換 key 後新舊元素會同時存在，直到舊元素離場結束。
+// class 名稱是 `${name}-enter-from` 等，序列如下：
 //   進場  enter-from + enter-active → 兩個 frame 後 enter-from 換成 enter-to → transition 結束後移除 enter-to、enter-active
 //   離場  leave-from → 強制 reflow → leave-active → 兩個 frame 後 leave-from 換成 leave-to → 結束後移除元素
-// 離場元素套用的是「換 key 那一次 render」的 name（Vue 會更新舊元素的 hooks），所以 slide-left / slide-right 能正確反向。
+// 離場元素套用的是「換 key 那一次 render」的 name，所以連續切換時 slide-left / slide-right 的方向由最近一次切換決定。
 // class 是直接操作 DOM 加上去的：子元素的 className prop 不能是動態的，React 才不會覆蓋它們。
 
 interface Props {
@@ -43,7 +43,7 @@ const nextFrame = (cb: () => void) => {
 
 const toMs = (s: string) => (s === 'auto' ? 0 : Number(s.slice(0, -1).replace(',', '.')) * 1000);
 
-// 同 Vue 的 whenTransitionEnds：等 transitionend 事件收齊（每個屬性一個），並以總時間 + 1ms 的 timeout 作保險
+// 等 transitionend 事件收齊（每個屬性一個），並以總時間 + 1ms 的 timeout 作保險（事件沒觸發時仍會結束）
 const whenTransitionEnds = (el: HTMLElement, resolve: () => void) => {
   const s = getComputedStyle(el);
   let delays = s.transitionDelay.split(', ');
@@ -78,7 +78,7 @@ interface SlotProps {
   element: ReactElement<{ ref?: Ref<HTMLElement> }>;
   name: string;
   styles: Record<string, string>;
-  /** 是否在掛載時播進場（第一次 render 不播，同 Vue 沒有 appear） */
+  /** 是否在掛載時播進場（第一次 render 不播） */
   enter: boolean;
   leaving: boolean;
   onLeft: () => void;
@@ -89,13 +89,13 @@ function Slot({ element, name, styles, enter, leaving, onLeft }: SlotProps) {
   const node = useRef<HTMLElement | null>(null);
   const cancelEnter = useRef<(() => void) | null>(null);
   const cancelLeave = useRef<(() => void) | null>(null);
-  // enter-to、leave-from 在 CSS 裡沒有規則，CSS Modules 不會輸出它們；退回字面名稱，class 序列才與 Vue 相同
+  // enter-to、leave-from 在 CSS 裡沒有規則，CSS Modules 不會輸出它們（styles[...] 為 undefined）；退回字面名稱，class 序列才完整
   const cls = (phase: string) => styles[`${name}-${phase}`] ?? `${name}-${phase}`;
 
   useLayoutEffect(() => {
     const el = node.current;
     if (!enter || !el) return;
-    // 在繪製前加上起始態（對應 Vue 的 onBeforeEnter）
+    // 在繪製前加上起始態，避免元素先以終態閃現一格
     el.classList.add(cls('enter-from'), cls('enter-active'));
     let stopWait = () => {};
     const stopFrame = nextFrame(() => {
@@ -117,7 +117,7 @@ function Slot({ element, name, styles, enter, leaving, onLeft }: SlotProps) {
   useLayoutEffect(() => {
     const el = node.current;
     if (!leaving || !el) return;
-    // 進場到一半就離場：先取消進場（Vue 的 enter cancelled）
+    // 進場到一半就離場：先取消進場（停掉等待並移除進場 class）
     cancelEnter.current?.();
     el.classList.add(cls('leave-from'));
     void el.offsetHeight; // forceReflow

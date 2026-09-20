@@ -1,4 +1,4 @@
-// 元件間共用的資料型別。原本 EventItem / ShowcaseItem 在 7 個 .vue 內各自重複定義。
+// 元件間共用的資料型別（EventItem、ShowcaseItem 等），集中在這裡定義。
 // 這些資料由 .astro 頁面從 Content Collections 整理後以 props 傳入。
 
 export interface Link {

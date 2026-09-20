@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-// 對應原本的 composables/useScrollReveal.ts（Vue 版，W7 已刪）。行為逐項保留：
+// 帶 data-reveal 的元素進入視窗時淡入、離開時還原。行為：
 // - 只在掛載時 querySelectorAll('[data-reveal]') 一次（之後新增的元素不會被觀察）
 // - threshold 0.2；進入視窗時把 data-reveal-delay 寫進 inline transitionDelay 並加上字面 class 'revealed'，離開時移除
 // - 卸載時 disconnect

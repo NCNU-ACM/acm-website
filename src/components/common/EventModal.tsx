@@ -12,8 +12,8 @@ interface Props {
 type ViewMode = 'announcement' | 'recap';
 
 export default function EventModal({ event, groups, showcaseItems, onClose }: Props) {
-  // Vue 的 watch(() => props.event) 不是 immediate：掛載時不碰 body，只有 event 之後變動才鎖／解鎖。
-  // 用 layout effect 讓它在繪製前執行，對應 watch 預設的 flush: 'pre'。
+  // body 捲動鎖：掛載時不碰 body，只有 event 之後變動才鎖／解鎖。
+  // 用 layout effect 讓它在繪製前執行，modal 的第一個 frame 就已鎖定。
   const mounted = useRef(false);
   useLayoutEffect(() => {
     if (!mounted.current) {

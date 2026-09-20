@@ -11,8 +11,7 @@ interface Props {
 
 type ViewMode = 'showcase' | 'announcement';
 
-// 原本是 watch(() => props.showcase) 重設 viewMode 與 lightboxIndex；
-// 用 key 讓內容元件在每次開啟時重新掛載，state 就自然回到初始值
+// 用 key 讓內容元件在每次開啟時重新掛載，viewMode 與 lightboxIndex 自然回到初始值（不必在 effect 裡重設）
 export default function ShowcaseModal({ showcase, events, groups, onClose }: Props) {
   if (!showcase) return null;
   return (

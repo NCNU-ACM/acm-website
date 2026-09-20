@@ -12,7 +12,7 @@ export default function HeroSection() {
   const { containerRef } = useScrollReveal();
 
   const [isHovered, setIsHovered] = useState(false);
-  // SSR 與 hydrate 時為空字串，掛載後才填入（與 Vue 的 onMounted 相同）
+  // SSR 與 hydrate 時為空字串，掛載後才填入，避免伺服器與瀏覽器輸出不一致
   const [asciiArt, setAsciiArt] = useState('');
   const [inputText, setInputText] = useState('');
   const composing = useRef(false);
@@ -34,10 +34,9 @@ export default function HeroSection() {
     renderAscii('NCNU ACM');
   }, []);
 
-  // Vue 的 v-model 在輸入法組字期間（compositionstart → compositionend）忽略 input 事件，inputText 保持舊值；
-  // 組字結束時 Vue 會補發一次 input 事件，這時才更新 inputText，@input 的 updateAscii 也才拿到最終文字。
-  // 因此 <input> 維持非受控（v-model 本來就只有 DOM → state 單向），並照同樣規則更新，
+  // 輸入法組字期間（compositionstart → compositionend）不更新 inputText，等組字結束才用最終文字更新並重畫 ASCII，
   // 否則注音／拼音組字中的中間字母會被拿去畫 ASCII，且組字第一個字時 placeholder 會提早消失。
+  // 因此 <input> 維持非受控（defaultValue），只由這個函式把值單向寫進 state。
   const commit = (value: string) => {
     setInputText(value);
     updateAscii(value);

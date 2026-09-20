@@ -49,11 +49,10 @@ export default function GroupsSection({ groups }: Props) {
               >
                 <div className={styles['group-card-inner']}>
                   <div className={styles['group-icon-wrapper']}>
-                    {/* Vue 原檔寫 :stroke="group.color"，但 lucide-vue-next 的元件自己的 stroke 會蓋掉它，實際輸出是
-                        stroke="currentColor"；lucide-react 的 stroke 會生效，照搬會讓圖示變成小組色。維持 baseline 的畫面，不傳 stroke。 */}
+                    {/* 不傳 stroke：圖示用 currentColor，跟隨文字色。若傳 stroke={group.color}，圖示會變成小組色。 */}
                     <Icon size={48} />
                   </div>
-                  {/* group-info 在原檔沒有任何規則，CSS Modules 不會輸出它，用字面 class 保持 DOM 與 baseline 一致 */}
+                  {/* group-info 沒有對應的 CSS 規則，CSS Modules 不會輸出沒有規則的 class，所以用字面 class 名稱 */}
                   <div className="group-info">
                     <h3 className="text-2xl font-bold mb-2" style={{ color: group.color }}>
                       {group.name}

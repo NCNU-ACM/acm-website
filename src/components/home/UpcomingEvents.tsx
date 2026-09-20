@@ -11,8 +11,8 @@ interface Props {
   showcaseItems: ShowcaseItem[];
 }
 
-// 原本還有上一張／下一張按鈕、圓點與 track 捲動，但 events 最多 3 筆（index.astro 的 slice(0, 3)）、
-// visibleCount 是 3，那些元素永遠不會出現，已依遷移計畫刪除（見 REACT_MIGRATION_PLAN.md §1.1）。
+// events 最多 3 筆（index.astro 的 slice(0, 3)），剛好排滿一列，
+// 所以不需要上一張／下一張按鈕、圓點或捲動，卡片固定置中排列。
 export default function UpcomingEvents({ events, groups, showcaseItems }: Props) {
   const { containerRef } = useScrollReveal();
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);

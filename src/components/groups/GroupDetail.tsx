@@ -72,7 +72,7 @@ export default function GroupDetail({ group, members, events, showcase, showcase
     return pauseCarousel;
   }, []);
 
-  // 點擊時開的是「當下」的那一張：離場中的舊 slide 被點到，Vue 的 inline handler 也是讀當下的 showcaseIndex
+  // 點擊時開的是「當下」顯示的那一張：轉場中離場的舊 slide 被點到時，開的也是目前這張，而不是被點到的舊 slide
   const showcaseIndexRef = useRef(showcaseIndex);
   showcaseIndexRef.current = showcaseIndex;
 

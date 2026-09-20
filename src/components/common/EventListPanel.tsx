@@ -61,7 +61,7 @@ export default function EventListPanel({
     setMarqueeOffsets((o) => ({ ...o, [id]: 0 }));
   };
 
-  // 原本 v-bind(maxHeight) 是掛在根元素上的 CSS 變數
+  // 以 CSS 變數把 maxHeight 傳給樣式表（module.css 內以 var(--max-height) 使用）
   const rootStyle = { '--max-height': maxHeight } as CSSProperties;
 
   return (

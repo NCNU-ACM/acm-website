@@ -86,8 +86,8 @@ export default function MembersCarousel({ members, semesters, latestSemester, gr
     };
   };
 
-  // 原本在迴圈裡連呼 prev()/next() |offset| 次，結果一定等於目標卡片自己的 index
-  // （offset 只是 index - currentIndex 加減一圈）。React 的 state 不會在迴圈內即時更新，所以直接設定。
+  // 點擊側邊卡片一定是切到該卡片自己的 index（offset 只是 index - currentIndex 加減一圈），
+  // 直接設定即可，不必逐步呼叫 prev / next（React 的 state 在同一個 handler 內不會即時更新）。
   const handleCardClick = (index: number) => {
     setCurrentIndex(index);
   };
@@ -131,7 +131,7 @@ export default function MembersCarousel({ members, semesters, latestSemester, gr
                 </div>
                 <div className={styles['card-right']}>
                   <p className={styles['member-role']}>
-                    {/* Vue 版 <span>{{ label }} </span> 的尾隨空格會被模板編譯器去掉（baseline 實測「系統組組長」），所以不加空格 */}
+                    {/* 組別與職稱在同一行文字流內相鄰，中間不加空格，顯示為「系統組組長」 */}
                     {member.group && <span>{groupLabel(member.group)}</span>}{member.role}
                   </p>
                   {member.bio && <p className={styles['member-bio']}>{member.bio}</p>}
