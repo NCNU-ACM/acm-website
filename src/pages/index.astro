@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroSection from '../components/home/HeroSection.vue';
-import GroupsSection from '../components/home/GroupsSection.vue';
-import UpcomingEvents from '../components/home/UpcomingEvents.vue';
-import EventReview from '../components/home/EventReview.vue';
-import JoinSection from '../components/home/JoinSection.vue';
+import HeroSection from '../components/home/HeroSection.tsx';
+import GroupsSection from '../components/home/GroupsSection.tsx';
+import UpcomingEvents from '../components/home/UpcomingEvents.tsx';
+import EventReview from '../components/home/EventReview.tsx';
+import JoinSection from '../components/home/JoinSection.tsx';
 import { getCollection } from 'astro:content';
 
 const allGroups = await getCollection('groups');

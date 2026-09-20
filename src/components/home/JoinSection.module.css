@@ -1,47 +1,18 @@
-<template>
-  <div ref="containerRef" class="join-container h-full relative overflow-hidden flex flex-col items-center justify-center px-16 text-center">
-    <Background />
-    <div class="glow-bg"></div>
-
-    <div class="relative z-10">
-      <p class="text-sm tracking-widest mb-2 section-label" data-reveal>JOIN US</p>
-      <h2 class="section-title text-5xl md:text-6xl font-bold mb-6" data-reveal data-reveal-delay="100">準備好加入了嗎？</h2>
-      <p class="text-lg mb-10 max-w-xl mx-auto section-subtitle" data-reveal data-reveal-delay="200">
-        不論你是程式新手還是經驗豐富的開發者，這裡都有適合你的位置
-      </p>
-
-      <div class="flex flex-wrap gap-4 justify-center pt-4" data-reveal data-reveal-delay="300">
-        <a href="/join" class="inline-block px-8 py-4 rounded-full font-medium transition-all hover:scale-105 glow-button">
-          立即加入 →
-        </a>
-        <a href="/groups/system" class="inline-block px-8 py-4 rounded-full font-medium transition-all hover:scale-105 outline-button">
-          了解各小組
-        </a>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script setup lang="ts">
-import Background from '../common/Background.vue';
-import { useScrollReveal } from '../../composables/useScrollReveal.ts';
-
-const { containerRef } = useScrollReveal();
-</script>
-
-<style scoped>
 .join-container {
   height: 100%;
   background: linear-gradient(to top, #030b23 0%, #063238 100%);
 }
 
-[data-reveal] {
+/* CSS Modules 不會替屬性選擇器加範圍，直接寫 [data-reveal] 會變成全域規則，
+   所以用 :where(根 class) 限定只作用於本元件（:where 不增加 specificity，與同檔其他規則的相對關係不變）。
+   .revealed 是 useScrollReveal 以 classList 加的字面 class，必須 :global，不能被雜湊。 */
+:where(.join-container) [data-reveal] {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-[data-reveal].revealed {
+:where(.join-container) [data-reveal]:global(.revealed) {
   opacity: 1;
   transform: translateY(0);
 }
@@ -121,4 +92,3 @@ const { containerRef } = useScrollReveal();
   border-color: #3b82f6;
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
-</style>

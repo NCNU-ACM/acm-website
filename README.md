@@ -1,13 +1,13 @@
 # NCNU ACM 官方網站
 
-國立暨南國際大學 ACM 學生分會官方網站前台，使用 Astro 搭配 Vue 3 建置的靜態網站。
+國立暨南國際大學 ACM 學生分會官方網站前台，使用 Astro 搭配 React 建置的靜態網站。
 
 ## 文件導覽
 
 | 文件 | 內容 |
 |---|---|
 | [INSTALL.md](INSTALL.md) | 伺服器安裝與部署步驟、日常維運、常見問題 |
-| [VUE_GUIDE.md](VUE_GUIDE.md) | Vue 3 入門教學與專案元件導覽，給接手維護的成員 |
+| 維護文件 | 維護文件見 HackMD（連結待補） |
 | 本文件 | 專案架構、資料 schema、頁面結構 |
 
 ## 專案架構
@@ -16,9 +16,9 @@
 
 | Repo | 說明 | 技術 |
 |---|---|---|
-| [acm-website](https://github.com/NCNU-ACM/acm-website)（本專案） | 官網前台 | Astro + Vue 3 |
+| [acm-website](https://github.com/NCNU-ACM/acm-website)（本專案） | 官網前台 | Astro + React |
 | [acm-cms-backend](https://github.com/NCNU-ACM/acm-cms-backend) | CMS 後端 API | FastAPI |
-| [acm-cms-frontend](https://github.com/NCNU-ACM/acm-cms-frontend) | CMS 後台介面 | Vue 3 |
+| [acm-cms-frontend](https://github.com/NCNU-ACM/acm-cms-frontend) | CMS 後台介面 | React + TypeScript |
 | [acm-backup](https://github.com/NCNU-ACM/acm-backup) | 內容資料獨立備份 | - |
 
 社團幹部透過 CMS 後台新增或編輯內容（活動、小組、幹部、成果展示、全體通知），CMS 後端會把資料寫成 Markdown 檔案存放在本專案的 `content/` 資料夾，並自動同步備份一份到 `acm-backup` repo。官網前台讀取 `content/` 底下的 Markdown 檔案，在 build 時靜態生成所有頁面。
@@ -116,7 +116,7 @@ content/
 | `/groups/[slug]` | 小組詳情頁（介紹、幹部、公告、成果展示） |
 | `/join` | 加入我們 |
 
-頁面由 `src/pages/` 底下的檔案路徑決定，共用外框在 `src/layouts/BaseLayout.astro`，Vue 互動元件放在 `src/components/`。元件的職責說明見 [VUE_GUIDE.md](VUE_GUIDE.md)。
+頁面由 `src/pages/` 底下的檔案路徑決定，共用外框在 `src/layouts/BaseLayout.astro`，React 互動元件放在 `src/components/`。維護文件見 HackMD（連結待補）。
 
 ## SEO 設定
 
@@ -159,11 +159,10 @@ npm run build
 | 套件 | 用途 |
 |---|---|
 | [Astro](https://astro.build/) | 靜態網站框架、檔案路由、Content Collections |
-| [Vue 3](https://vuejs.org/) | 互動元件（需搭配 `client:load` 才會在瀏覽器執行） |
+| [React](https://react.dev/) | 互動元件（需搭配 `client:load` 才會在瀏覽器執行） |
 | Zod | Content Collections 的資料驗證（Astro 內建） |
 | [Tailwind CSS](https://tailwindcss.com/) | 工具類樣式 |
-| [GSAP](https://gsap.com/) | 動畫效果 |
-| lucide-vue-next | 圖示 |
+| lucide-react | 圖示 |
 | figlet | ASCII 文字效果 |
 | @astrojs/sitemap | 自動產生 sitemap |
 
