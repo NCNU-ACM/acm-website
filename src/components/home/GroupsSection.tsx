@@ -49,8 +49,7 @@ export default function GroupsSection({ groups }: Props) {
               >
                 <div className={styles['group-card-inner']}>
                   <div className={styles['group-icon-wrapper']}>
-                    {/* 不傳 stroke：圖示用 currentColor，跟隨文字色。若傳 stroke={group.color}，圖示會變成小組色。 */}
-                    <Icon size={48} />
+                    <Icon size={48} stroke={group.color} />
                   </div>
                   {/* group-info 沒有對應的 CSS 規則，CSS Modules 不會輸出沒有規則的 class，所以用字面 class 名稱 */}
                   <div className="group-info">
