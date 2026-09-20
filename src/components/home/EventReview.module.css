@@ -55,7 +55,14 @@
   position: relative;
   overflow-x: auto;
   padding: 4rem 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.4) rgba(255, 255, 255, 0.05);
 }
+
+.timeline-wrapper::-webkit-scrollbar { height: 6px; }
+.timeline-wrapper::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+.timeline-wrapper::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 3px; }
+.timeline-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.6); }
 
 .timeline-line {
   position: absolute;

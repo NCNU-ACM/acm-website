@@ -48,6 +48,7 @@ export default function EventReview({ events, groups, showcaseItems }: Props) {
                   key={event.id}
                   className={`${styles['timeline-item']} ${i % 2 === 0 ? styles['item-top'] : styles['item-bottom']}`}
                   data-reveal=""
+                  data-reveal-follow=""
                   data-reveal-delay={300 + i * 100}
                   onClick={() => setSelectedEvent(event)}
                 >
