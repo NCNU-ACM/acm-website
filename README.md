@@ -7,7 +7,7 @@
 | 文件 | 內容 |
 |---|---|
 | [INSTALL.md](INSTALL.md) | 伺服器安裝與部署步驟、日常維運、常見問題 |
-| 維護文件 | 維護文件見 HackMD（連結待補） |
+| 維護文件 | [React 維護指南（HackMD）](https://hackmd.io/@HcF5PSZWQxW-PSzM1BqJYw/BJxnJPpKze) |
 | 本文件 | 專案架構、資料 schema、頁面結構 |
 
 ## 專案架構
@@ -103,7 +103,26 @@ content/
 
 > 圖片一律以外部連結（URL）方式嵌入，不會上傳到伺服器，避免佔用儲存空間。
 
-新增欄位時要同步修改四個地方：本專案的 `src/content.config.ts`、後端的 `models.py`、CMS 後台對應的 Manager 元件，以及官網要顯示該欄位的元件。
+新增欄位時，同一個欄位要依序改到下面幾個地方，**漏掉任何一處都不會有錯誤訊息，只是欄位默默消失**（以「活動」為例）：
+
+| 位置 | 檔案 | 說明 |
+|---|---|---|
+| 後端模型 | `acm-cms-backend/models.py` | 模型沒有的欄位會被丟掉，不會寫進 `.md` |
+| Content schema | `src/content.config.ts` | 新欄位要加 `.optional()`，否則舊檔案會讓 build 失敗 |
+| CMS 型別 | `acm-cms-frontend/src/types/api.ts` | `Input` 與 `Row` 兩個型別 |
+| CMS 表單 | `acm-cms-frontend/src/components/` 對應的 Manager | 表單型別、預設值、編輯帶入、送出處理與輸入框 |
+| 官網元件型別 | `src/types/content.ts` | 例如 `EventItem` |
+| 官網頁面資料 | `src/pages/` 內所有把 collection 整理成元件 props 的 `.map`（見下） | 欄位是手動列出的，不會自動帶過去 |
+| 顯示 | `src/components/` 中要顯示該欄位的元件 | 例如 `EventModal.tsx` |
+
+活動資料在 `.astro` 頁面裡共有四處 `.map` 需要補上新欄位：
+
+- `src/pages/index.astro`：`upcoming`
+- `src/pages/index.astro`：`past`
+- `src/pages/events.astro`：`events`
+- `src/pages/groups/[slug].astro`：`groupEvents`
+
+其他 collection 也有各自的 `.map`（例如成果展示在 `index.astro`、`events.astro`、`groups/[slug].astro`，幹部在 `about/members.astro`、`groups/[slug].astro`），改欄位前先在 `src/pages/` 搜尋該欄位所屬 collection 的既有欄位名稱，確認每一處都補上。詳細步驟與範例見維護文件。
 
 ## 頁面結構
 
@@ -116,7 +135,7 @@ content/
 | `/groups/[slug]` | 小組詳情頁（介紹、幹部、公告、成果展示） |
 | `/join` | 加入我們 |
 
-頁面由 `src/pages/` 底下的檔案路徑決定，共用外框在 `src/layouts/BaseLayout.astro`，React 互動元件放在 `src/components/`。維護文件見 HackMD（連結待補）。
+頁面由 `src/pages/` 底下的檔案路徑決定，共用外框在 `src/layouts/BaseLayout.astro`，React 互動元件放在 `src/components/`。維護文件見 [HackMD](https://hackmd.io/@HcF5PSZWQxW-PSzM1BqJYw/BJxnJPpKze)。
 
 ## SEO 設定
 
